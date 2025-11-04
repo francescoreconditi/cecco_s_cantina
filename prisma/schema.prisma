@@ -1,0 +1,157 @@
+// Schema Prisma per Cantina Vini
+// Gestione vini, bottiglie, degustazioni e ubicazioni
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Vino "astratto" - rappresenta un tipo di vino
+model Wine {
+  id              String   @id @default(cuid())
+  ownerId         String   @map("owner_id")
+
+  // Dati principali
+  nome            String
+  produttore      String?
+  denominazione   String?
+  annata          Int?
+  vitigni         String[] // array di vitigni
+  regione         String?
+  paese           String?  @default("Italia")
+
+  // Caratteristiche
+  formatoMl       Int?     @default(750) @map("formato_ml")
+  gradoAlcolico   Float?   @map("grado_alcolico")
+  tipologia       String?  // Rosso, Bianco, Rosato, Spumante, etc.
+
+  // Note e dettagli
+  note            String?  @db.Text
+
+  // Relazioni
+  bottiglie       Bottle[]
+  degustazioni    Tasting[]
+
+  // Timestamp
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([ownerId, annata])
+  @@index([ownerId, produttore])
+  @@index([ownerId, regione])
+  @@map("wines")
+}
+
+// Bottiglia fisica - inventario reale
+model Bottle {
+  id              String   @id @default(cuid())
+  ownerId         String   @map("owner_id")
+  wineId          String   @map("wine_id")
+
+  // Inventario
+  quantita        Int      @default(1)
+
+  // Acquisto
+  dataAcquisto    DateTime? @map("data_acquisto")
+  prezzoAcquisto  Decimal?  @db.Decimal(10,2) @map("prezzo_acquisto")
+  fornitore       String?
+
+  // Ubicazione
+  locationId      String?   @map("location_id")
+
+  // Maturità e finestra di beva
+  prontoDA        DateTime? @map("pronto_da")
+  meglioEntro     DateTime? @map("meglio_entro")
+  statoMaturita   String?   @map("stato_maturita") // "pronta", "in_evoluzione", "oltre_picco"
+
+  // Identificazione
+  barcode         String?   @unique
+  fotoEtichettaUrl String?  @map("foto_etichetta_url")
+
+  // Note personali
+  notePosizione   String?   @map("note_posizione")
+  notePrivate     String?   @db.Text @map("note_private")
+
+  // Relazioni
+  wine            Wine      @relation(fields: [wineId], references: [id], onDelete: Cascade)
+  location        Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+
+  // Timestamp
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@index([ownerId, statoMaturita])
+  @@index([ownerId, wineId])
+  @@index([barcode])
+  @@map("bottles")
+}
+
+// Degustazione
+model Tasting {
+  id              String   @id @default(cuid())
+  ownerId         String   @map("owner_id")
+  wineId          String   @map("wine_id")
+
+  // Dati degustazione
+  data            DateTime @default(now())
+  punteggio       Int?     // scala 0-100
+
+  // Note degustazione
+  aspettoVisivo   String?  @db.Text @map("aspetto_visivo")
+  profumo         String?  @db.Text
+  gusto           String?  @db.Text
+  noteGenerali    String?  @db.Text @map("note_generali")
+
+  // Contesto
+  occasione       String?
+  abbinamentoCibo String?  @map("abbinamento_cibo")
+  partecipanti    String[] // nomi di chi ha partecipato
+
+  // Relazioni
+  wine            Wine     @relation(fields: [wineId], references: [id], onDelete: Cascade)
+
+  // Timestamp
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([ownerId, data])
+  @@index([ownerId, wineId])
+  @@map("tastings")
+}
+
+// Ubicazione (gerarchia: Cantina -> Scaffale -> Ripiano)
+model Location {
+  id              String   @id @default(cuid())
+  ownerId         String   @map("owner_id")
+
+  // Dati ubicazione
+  nome            String
+  descrizione     String?  @db.Text
+
+  // Gerarchia
+  parentId        String?  @map("parent_id")
+  parent          Location? @relation("LocationHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children        Location[] @relation("LocationHierarchy")
+
+  // Caratteristiche ambientali
+  temperatura     Float?   // gradi celsius
+  umidita         Int?     // percentuale
+  noteAmbientali  String?  @db.Text @map("note_ambientali")
+
+  // Capacità
+  capacitaMassima Int?     @map("capacita_massima")
+
+  // Relazioni
+  bottiglie       Bottle[]
+
+  // Timestamp
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([ownerId, parentId])
+  @@map("locations")
+}

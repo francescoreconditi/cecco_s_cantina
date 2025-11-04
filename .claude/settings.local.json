@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(npm run dev:*)",
+      "Bash(__NEW_LINE__ echo \"========== FINAL CODEBASE ANALYSIS DOCUMENT ==========\")",
+      "Bash(__NEW_LINE__ echo \"CODEBASE EXPLORATION - FINAL SUMMARY\")",
+      "Bash(npm run build:*)",
+      "Bash(timeout:*)",
+      "Bash(taskkill:*)",
+      "Bash(ipconfig:*)",
+      "Bash(next dev:*)",
+      "Bash(npx next dev:*)",
+      "Bash(rd /s /q .next)",
+      "Bash(git clone:*)",
+      "Bash(node vivino.js:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

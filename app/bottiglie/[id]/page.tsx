@@ -1,0 +1,390 @@
+"use client";
+
+import { use, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  useBottle,
+  useDeleteBottle,
+  useUpdateBottle,
+} from "@/lib/hooks/use-bottles";
+import Link from "next/link";
+import Image from "next/image";
+import { Header } from "@/components/layout/header";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { ImageZoomHover } from "@/components/ui/image-zoom-hover";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { Barcode, X, ZoomIn as ZoomInIcon, ZoomOut, RotateCcw } from "lucide-react";
+
+export default function DettaglioBottigliaPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const router = useRouter();
+  const { id } = use(params);
+  const { data: bottle, isLoading, error } = useBottle(id);
+  const deleteBottle = useDeleteBottle();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showImageZoom, setShowImageZoom] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      await deleteBottle.mutateAsync(id);
+      router.push("/bottiglie");
+    } catch (error) {
+      console.error("Errore eliminazione bottiglia:", error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
+          <p className="text-gray-600">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !bottle) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="rounded-lg bg-red-50 p-6 text-center">
+          <p className="text-red-800">
+            Bottiglia non trovata o errore nel caricamento
+          </p>
+          <Link
+            href="/bottiglie"
+            className="mt-4 inline-block text-sm text-wine-600 hover:text-wine-700"
+          >
+            Torna alla lista
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+
+      {/* Breadcrumbs */}
+      <div className="border-b bg-white">
+        <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 lg:px-8">
+          <Breadcrumbs />
+        </div>
+      </div>
+
+      {/* Header Pagina */}
+      <div className="border-b bg-white">
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <Link
+              href="/bottiglie"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+            >
+              ← Torna alla lista
+            </Link>
+            <div className="flex gap-3">
+              <Link
+                href={`/bottiglie/${bottle.id}/modifica`}
+                className="rounded-md border border-wine-600 px-4 py-2 text-sm font-semibold text-wine-600 hover:bg-wine-50"
+              >
+                Modifica
+              </Link>
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="rounded-md border border-red-600 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+              >
+                Elimina
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Contenuto principale */}
+      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Foto etichetta con zoom hover */}
+        {bottle.foto_etichetta_url && (
+          <div className="mb-8 overflow-hidden rounded-lg bg-white p-4 shadow">
+            <ImageZoomHover
+              src={bottle.foto_etichetta_url}
+              alt={`Etichetta ${bottle.wine.nome}`}
+              onClick={() => setShowImageZoom(true)}
+            />
+            <p className="mt-2 text-center text-sm text-gray-500">
+              Passa il mouse per ingrandire • Clicca per visualizzazione completa
+            </p>
+          </div>
+        )}
+
+        {/* Titolo */}
+        <div className="mb-8">
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900">
+                {bottle.wine.nome}
+              </h1>
+              <p className="mt-2 text-xl text-gray-600">
+                {bottle.wine.produttore}
+              </p>
+              {bottle.wine.annata && (
+                <p className="mt-1 text-lg text-gray-500">
+                  Annata: {bottle.wine.annata}
+                </p>
+              )}
+            </div>
+            {bottle.wine.tipologia && (
+              <span className="inline-flex rounded-full bg-wine-100 px-4 py-2 text-sm font-medium text-wine-800">
+                {bottle.wine.tipologia}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Griglia informazioni */}
+        <div className="space-y-6">
+          {/* Inventario */}
+          <div className="rounded-lg bg-white p-6 shadow">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+              Inventario
+            </h2>
+            <dl className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Quantità</dt>
+                <dd className="mt-1 text-2xl font-bold text-wine-600">
+                  {bottle.quantita}
+                </dd>
+              </div>
+              {bottle.stato_maturita && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Stato Maturità
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {bottle.stato_maturita}
+                  </dd>
+                </div>
+              )}
+              {bottle.location_id && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Ubicazione
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {bottle.location_id}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
+          {/* Dati acquisto */}
+          <div className="rounded-lg bg-white p-6 shadow">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+              Dati Acquisto
+            </h2>
+            <dl className="grid gap-4 sm:grid-cols-2">
+              {bottle.prezzo_acquisto && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">Prezzo</dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    €{bottle.prezzo_acquisto.toFixed(2)}
+                  </dd>
+                </div>
+              )}
+              {bottle.data_acquisto && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Data Acquisto
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {new Date(bottle.data_acquisto).toLocaleDateString("it-IT")}
+                  </dd>
+                </div>
+              )}
+              {bottle.fornitore && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">
+                    Fornitore
+                  </dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {bottle.fornitore}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </div>
+
+          {/* Codice a barre */}
+          {bottle.barcode && (
+            <div className="rounded-lg bg-white p-6 shadow">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">
+                Codice a Barre
+              </h2>
+              <div className="flex items-center gap-2">
+                <Barcode className="h-5 w-5 text-wine-600" />
+                <code className="rounded bg-gray-100 px-3 py-2 text-lg font-mono text-gray-900">
+                  {bottle.barcode}
+                </code>
+              </div>
+            </div>
+          )}
+
+          {/* Note */}
+          {bottle.note_private && (
+            <div className="rounded-lg bg-white p-6 shadow">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">Note</h2>
+              <p className="whitespace-pre-wrap text-sm text-gray-700">
+                {bottle.note_private}
+              </p>
+            </div>
+          )}
+
+          {/* Link al vino */}
+          <div className="rounded-lg bg-wine-50 p-6">
+            <h3 className="mb-2 text-sm font-semibold text-wine-900">
+              Vino Associato
+            </h3>
+            <Link
+              href={`/vini/${bottle.wine_id}`}
+              className="inline-flex items-center text-wine-600 hover:text-wine-700"
+            >
+              <span>Vedi dettaglio vino "{bottle.wine.nome}"</span>
+              <span className="ml-2">→</span>
+            </Link>
+          </div>
+
+          {/* Metadata */}
+          <div className="rounded-lg bg-gray-100 p-4">
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>
+                Creato il{" "}
+                {new Date(bottle.created_at).toLocaleDateString("it-IT")}
+              </span>
+              <span>
+                Aggiornato il{" "}
+                {new Date(bottle.updated_at).toLocaleDateString("it-IT")}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal conferma eliminazione */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Conferma eliminazione
+            </h3>
+            <p className="mt-2 text-sm text-gray-600">
+              Sei sicuro di voler eliminare questa bottiglia di "
+              {bottle.wine.nome}"? Questa azione non può essere annullata.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                Annulla
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleteBottle.isPending}
+                className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+              >
+                {deleteBottle.isPending ? "Eliminazione..." : "Elimina"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal zoom interattivo */}
+      {showImageZoom && bottle.foto_etichetta_url && (
+        <div className="fixed inset-0 z-50 bg-black">
+          {/* Header con controlli */}
+          <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black to-transparent p-4">
+            <div className="text-white">
+              <h3 className="text-lg font-semibold">{bottle.wine.nome}</h3>
+              <p className="text-sm text-gray-300">
+                {bottle.wine.produttore}
+                {bottle.wine.annata && ` • ${bottle.wine.annata}`}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowImageZoom(false)}
+              className="rounded-full bg-white bg-opacity-20 p-2 text-white transition-all hover:bg-opacity-30"
+              aria-label="Chiudi"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+
+          {/* Contenitore zoom con TransformWrapper */}
+          <TransformWrapper
+            initialScale={1}
+            minScale={0.5}
+            maxScale={5}
+            centerOnInit
+            wheel={{ step: 0.1 }}
+            doubleClick={{ mode: "toggle", step: 0.7 }}
+          >
+            {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+              <>
+                {/* Controlli zoom */}
+                <div className="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2 rounded-full bg-black bg-opacity-50 p-2 backdrop-blur-sm">
+                  <button
+                    onClick={() => zoomOut()}
+                    className="rounded-full bg-white bg-opacity-20 p-2 text-white transition-all hover:bg-opacity-30"
+                    aria-label="Riduci zoom"
+                  >
+                    <ZoomOut className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => resetTransform()}
+                    className="rounded-full bg-white bg-opacity-20 p-2 text-white transition-all hover:bg-opacity-30"
+                    aria-label="Reset zoom"
+                  >
+                    <RotateCcw className="h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => zoomIn()}
+                    className="rounded-full bg-white bg-opacity-20 p-2 text-white transition-all hover:bg-opacity-30"
+                    aria-label="Aumenta zoom"
+                  >
+                    <ZoomInIcon className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Istruzioni */}
+                <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black bg-opacity-50 px-4 py-2 text-center text-sm text-white backdrop-blur-sm">
+                  Usa la rotella del mouse o i pulsanti per zoomare • Trascina per
+                  muoverti
+                </div>
+
+                {/* Immagine trasformabile */}
+                <TransformComponent
+                  wrapperClass="!w-full !h-full flex items-center justify-center"
+                  contentClass="flex items-center justify-center"
+                >
+                  <Image
+                    src={bottle.foto_etichetta_url!}
+                    alt={`Etichetta ${bottle.wine.nome} - Zoom`}
+                    width={1200}
+                    height={1600}
+                    className="max-h-screen max-w-full object-contain"
+                    priority
+                  />
+                </TransformComponent>
+              </>
+            )}
+          </TransformWrapper>
+        </div>
+      )}
+    </div>
+  );
+}
