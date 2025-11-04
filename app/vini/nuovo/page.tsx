@@ -116,19 +116,19 @@ export default function NuovoVinoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       {/* Header Pagina */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
               Aggiungi Nuovo Vino
             </h1>
             <Link
               href="/vini"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200"
             >
               Annulla
             </Link>
@@ -140,15 +140,15 @@ export default function NuovoVinoPage() {
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Foto Etichetta */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Foto Etichetta
             </h2>
 
             {/* Preview foto */}
             {photoPreview && (
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Anteprima
                 </label>
                 <div className="relative mt-2 inline-block">
@@ -160,7 +160,7 @@ export default function NuovoVinoPage() {
                   <button
                     type="button"
                     onClick={handleRemovePhoto}
-                    className="absolute right-2 top-2 rounded-full bg-red-600 p-2 text-white hover:bg-red-700"
+                    className="absolute right-2 top-2 rounded-full bg-red-600 dark:bg-red-700 p-2 text-white hover:bg-red-700 dark:hover:bg-red-600"
                     aria-label="Rimuovi foto"
                   >
                     ✕
@@ -173,7 +173,7 @@ export default function NuovoVinoPage() {
             <div>
               <label
                 htmlFor="foto"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-slate-300"
               >
                 {photoPreview ? "Cambia Foto" : "Aggiungi Foto"}
               </label>
@@ -184,24 +184,24 @@ export default function NuovoVinoPage() {
                 accept="image/*"
                 capture="environment"
                 onChange={handlePhotoChange}
-                className="mt-1 block w-full text-sm text-gray-900 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 hover:file:bg-wine-100"
+                className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 dark:file:bg-wine-900/50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 dark:file:text-wine-300 hover:file:bg-wine-100 dark:hover:file:bg-wine-900"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
                 Carica una foto dell'etichetta del vino (opzionale)
               </p>
             </div>
           </div>
 
           {/* Informazioni Principali */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Informazioni Principali
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label
                   htmlFor="nome"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Nome Vino *
                 </label>
@@ -212,7 +212,7 @@ export default function NuovoVinoPage() {
                   required
                   value={formData.nome}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. Barolo Riserva"
                 />
               </div>
@@ -220,7 +220,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="produttore"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Produttore
                 </label>
@@ -230,7 +230,7 @@ export default function NuovoVinoPage() {
                   name="produttore"
                   value={formData.produttore}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. Marchesi di Barolo"
                 />
               </div>
@@ -238,7 +238,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="denominazione"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Denominazione
                 </label>
@@ -248,7 +248,7 @@ export default function NuovoVinoPage() {
                   name="denominazione"
                   value={formData.denominazione}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. DOCG, DOC, IGT"
                 />
               </div>
@@ -256,7 +256,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="annata"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Annata
                 </label>
@@ -268,7 +268,7 @@ export default function NuovoVinoPage() {
                   max={new Date().getFullYear()}
                   value={formData.annata}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder={new Date().getFullYear().toString()}
                 />
               </div>
@@ -276,7 +276,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="tipologia"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Tipologia
                 </label>
@@ -285,7 +285,7 @@ export default function NuovoVinoPage() {
                   name="tipologia"
                   value={formData.tipologia}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 >
                   <option value="">Seleziona...</option>
                   <option value="Rosso">Rosso</option>
@@ -300,15 +300,15 @@ export default function NuovoVinoPage() {
           </div>
 
           {/* Vitigni e Territorio */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Vitigni e Territorio
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label
                   htmlFor="vitigni"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Vitigni
                 </label>
@@ -318,10 +318,10 @@ export default function NuovoVinoPage() {
                   name="vitigni"
                   value={formData.vitigni}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="Separa con virgole: Nebbiolo, Barbera, Dolcetto"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
                   Inserisci i vitigni separati da virgole
                 </p>
               </div>
@@ -329,7 +329,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="regione"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Regione
                 </label>
@@ -339,7 +339,7 @@ export default function NuovoVinoPage() {
                   name="regione"
                   value={formData.regione}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. Piemonte"
                 />
               </div>
@@ -347,7 +347,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="paese"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Paese
                 </label>
@@ -357,22 +357,22 @@ export default function NuovoVinoPage() {
                   name="paese"
                   value={formData.paese}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 />
               </div>
             </div>
           </div>
 
           {/* Caratteristiche */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Caratteristiche
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label
                   htmlFor="formato_ml"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Formato (ml)
                 </label>
@@ -381,7 +381,7 @@ export default function NuovoVinoPage() {
                   name="formato_ml"
                   value={formData.formato_ml}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 >
                   <option value="375">375 ml (Mezza)</option>
                   <option value="750">750 ml (Standard)</option>
@@ -394,7 +394,7 @@ export default function NuovoVinoPage() {
               <div>
                 <label
                   htmlFor="grado_alcolico"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Grado Alcolico (%)
                 </label>
@@ -407,7 +407,7 @@ export default function NuovoVinoPage() {
                   max="20"
                   value={formData.grado_alcolico}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. 14.5"
                 />
               </div>
@@ -415,12 +415,12 @@ export default function NuovoVinoPage() {
           </div>
 
           {/* Note */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">Note</h2>
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">Note</h2>
             <div>
               <label
                 htmlFor="note"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-slate-300"
               >
                 Note Personali
               </label>
@@ -430,7 +430,7 @@ export default function NuovoVinoPage() {
                 rows={4}
                 value={formData.note}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 placeholder="Aggiungi note, osservazioni o informazioni aggiuntive..."
               />
             </div>
@@ -438,9 +438,9 @@ export default function NuovoVinoPage() {
 
           {/* Errore */}
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-800">Errore:</p>
-              <p className="mt-1 text-sm text-red-700">{error}</p>
+            <div className="rounded-md bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-4">
+              <p className="text-sm font-medium text-red-800 dark:text-red-300">Errore:</p>
+              <p className="mt-1 text-sm text-red-700 dark:text-red-400">{error}</p>
             </div>
           )}
 
@@ -448,14 +448,14 @@ export default function NuovoVinoPage() {
           <div className="flex justify-end gap-3">
             <Link
               href="/vini"
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+              className="rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-slate-300 shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700"
             >
               Annulla
             </Link>
             <button
               type="submit"
               disabled={createWine.isPending || uploadLabel.isPending}
-              className="rounded-md bg-wine-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-wine-500 disabled:opacity-50"
+              className="rounded-md bg-wine-600 dark:bg-wine-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-wine-500 dark:hover:bg-wine-600 disabled:opacity-50"
             >
               {createWine.isPending || uploadLabel.isPending
                 ? "Salvataggio..."

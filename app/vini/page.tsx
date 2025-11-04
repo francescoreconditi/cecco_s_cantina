@@ -41,10 +41,10 @@ export default function ViniPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento vini...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento vini...</p>
         </div>
       </div>
     );
@@ -52,9 +52,9 @@ export default function ViniPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg bg-red-50 p-6 text-center">
-          <p className="text-red-800">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-6 text-center">
+          <p className="text-red-800 dark:text-red-300">
             Errore nel caricamento dei vini:{" "}
             {error instanceof Error ? error.message : "Errore sconosciuto"}
           </p>
@@ -64,16 +64,16 @@ export default function ViniPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       {/* Header Pagina */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">I Miei Vini</h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">I Miei Vini</h1>
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 {filteredWines?.length || 0} vin
                 {filteredWines?.length === 1 ? "o" : "i"} nel catalogo
               </p>
@@ -132,7 +132,7 @@ export default function ViniPage() {
         ) : (
           <div className="mt-12 text-center">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-gray-400 dark:text-slate-600"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -144,10 +144,10 @@ export default function ViniPage() {
                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
+            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-slate-200">
               Nessun vino trovato
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
               {searchQuery || filterRegione || filterTipologia
                 ? "Prova a modificare i filtri di ricerca"
                 : "Inizia aggiungendo il tuo primo vino al catalogo"}

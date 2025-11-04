@@ -2,28 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variabili CSS per il tema chiaro */
 :root {
   --foreground-rgb: 0, 0, 0;
+  --background-rgb: 249, 250, 251;
   --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
+  --background-end-rgb: 249, 250, 251;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 20, 20, 20;
-    --background-end-rgb: 0, 0, 0;
-  }
+/* Variabili CSS per il tema scuro */
+.dark {
+  --foreground-rgb: 243, 244, 246;
+  --background-rgb: 15, 23, 42;
+  --background-start-rgb: 15, 23, 42;
+  --background-end-rgb: 3, 7, 18;
+
+  /* Colori aggiuntivi per componenti dark mode */
+  --card-bg: 30, 41, 59;
+  --card-border: 51, 65, 85;
+  --input-bg: 30, 41, 59;
+  --input-border: 71, 85, 105;
+  --input-text: 226, 232, 240;
+  --input-placeholder: 148, 163, 184;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: rgb(var(--background-rgb));
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @layer utilities {

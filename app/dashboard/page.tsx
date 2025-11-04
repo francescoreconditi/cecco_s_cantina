@@ -45,29 +45,29 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
             Benvenuto nella tua cantina!
           </h2>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-gray-600 dark:text-slate-400">
             Gestisci i tuoi vini, bottiglie e degustazioni
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <Link href="/vini">
-            <div className="group rounded-lg bg-white p-6 shadow transition-all hover:shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-wine-600">
+            <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
                 Vini
               </h3>
-              <p className="mt-2 text-3xl font-bold text-wine-600">
+              <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {isLoading ? "..." : stats?.total || 0}
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 {stats?.total
                   ? `${stats.total} vin${stats.total === 1 ? "o" : "i"} nel catalogo`
                   : "Nessun vino ancora catalogato"}
@@ -76,14 +76,14 @@ export default function DashboardPage() {
           </Link>
 
           <Link href="/bottiglie">
-            <div className="group rounded-lg bg-white p-6 shadow transition-all hover:shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-wine-600">
+            <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
                 Bottiglie
               </h3>
-              <p className="mt-2 text-3xl font-bold text-wine-600">
+              <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {bottleStatsLoading ? "..." : bottleStats?.total || 0}
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 {bottleStats?.total
                   ? `${bottleStats.total} bottigli${bottleStats.total === 1 ? "a" : "e"} in inventario`
                   : "Inventario vuoto"}
@@ -92,14 +92,14 @@ export default function DashboardPage() {
           </Link>
 
           <Link href="/degustazioni">
-            <div className="group rounded-lg bg-white p-6 shadow transition-all hover:shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-wine-600">
+            <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
                 Degustazioni
               </h3>
-              <p className="mt-2 text-3xl font-bold text-wine-600">
+              <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {tastingsLoading ? "..." : tastings?.length || 0}
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 {tastings?.length
                   ? `${tastings.length} degustazion${tastings.length === 1 ? "e" : "i"} registrat${tastings.length === 1 ? "a" : "e"}`
                   : "Nessuna degustazione registrata"}
@@ -108,14 +108,14 @@ export default function DashboardPage() {
           </Link>
 
           <Link href="/ubicazioni">
-            <div className="group rounded-lg bg-white p-6 shadow transition-all hover:shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-wine-600">
+            <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
                 Ubicazioni
               </h3>
-              <p className="mt-2 text-3xl font-bold text-wine-600">
+              <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {locationsLoading ? "..." : locations?.length || 0}
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 {locations?.length
                   ? `${locations.length} ubicazion${locations.length === 1 ? "e" : "i"} definit${locations.length === 1 ? "a" : "e"}`
                   : "Nessuna ubicazione definita"}
@@ -127,21 +127,21 @@ export default function DashboardPage() {
         {/* Sezione Grafici */}
         {wines && wines.length > 0 && (
           <div className="mt-8">
-            <h2 className="mb-6 text-2xl font-bold text-gray-900">
+            <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-slate-100">
               Statistiche e Analisi
             </h2>
             <div className="grid gap-6 lg:grid-cols-2">
               {/* Grafico Vini per Regione */}
-              <div className="rounded-lg bg-white p-6 shadow">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                   Vini per Regione
                 </h3>
                 <WineRegionChart wines={wines} />
               </div>
 
               {/* Grafico Vini per Tipologia */}
-              <div className="rounded-lg bg-white p-6 shadow">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                   Vini per Tipologia
                 </h3>
                 <WineTypeChart wines={wines} />
@@ -150,8 +150,8 @@ export default function DashboardPage() {
 
             {/* Grafico Maturità Bottiglie */}
             {bottles && bottles.length > 0 && (
-              <div className="mt-6 rounded-lg bg-white p-6 shadow">
-                <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              <div className="mt-6 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+                <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                   Stato Maturità Bottiglie
                 </h3>
                 <MaturityTimeline bottles={bottles} />
@@ -161,11 +161,11 @@ export default function DashboardPage() {
         )}
 
         {(!stats || stats.total === 0) && (
-          <div className="mt-8 rounded-lg bg-wine-50 p-6">
-            <h3 className="text-lg font-semibold text-wine-900">
+          <div className="mt-8 rounded-lg bg-wine-50 dark:bg-wine-900/20 border border-transparent dark:border-wine-800/50 p-6">
+            <h3 className="text-lg font-semibold text-wine-900 dark:text-wine-200">
               Inizia ora!
             </h3>
-            <p className="mt-2 text-sm text-wine-800">
+            <p className="mt-2 text-sm text-wine-800 dark:text-wine-300">
               La tua cantina è vuota. Inizia aggiungendo i tuoi primi vini al
               catalogo.
             </p>

@@ -30,10 +30,10 @@ export default function DettaglioDegustazionePage({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
         </div>
       </div>
     );
@@ -41,9 +41,9 @@ export default function DettaglioDegustazionePage({
 
   if (error || !tasting) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg bg-red-50 p-6 text-center">
-          <p className="text-red-800">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-6 text-center">
+          <p className="text-red-800 dark:text-red-300">
             Degustazione non trovata o errore nel caricamento
           </p>
           <Link
@@ -58,23 +58,23 @@ export default function DettaglioDegustazionePage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       {/* Breadcrumbs */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 lg:px-8">
           <Breadcrumbs />
         </div>
       </div>
 
       {/* Header Pagina */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <Link
               href="/degustazioni"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200"
             >
               ← Torna alla lista
             </Link>
@@ -102,20 +102,20 @@ export default function DettaglioDegustazionePage({
         <div className="mb-8">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-100">
                 {tasting.wine.nome}
               </h1>
-              <p className="mt-2 text-xl text-gray-600">
+              <p className="mt-2 text-xl text-gray-600 dark:text-slate-400">
                 {tasting.wine.produttore}
                 {tasting.wine.annata && ` - ${tasting.wine.annata}`}
               </p>
             </div>
             {tasting.punteggio && (
               <div className="text-center">
-                <div className="text-5xl font-bold text-wine-600">
+                <div className="text-5xl font-bold text-wine-600 dark:text-wine-500">
                   {tasting.punteggio}
                 </div>
-                <div className="text-sm text-gray-500">/100</div>
+                <div className="text-sm text-gray-500 dark:text-slate-400">/100</div>
               </div>
             )}
           </div>
@@ -124,13 +124,13 @@ export default function DettaglioDegustazionePage({
         {/* Griglia informazioni */}
         <div className="space-y-6">
           {/* Informazioni base */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Informazioni Generali
             </h2>
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-gray-700">
-                <Calendar className="h-5 w-5 text-gray-400" />
+              <div className="flex items-center gap-2 text-gray-700 dark:text-slate-300">
+                <Calendar className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                 <span>
                   {new Date(tasting.data).toLocaleDateString("it-IT", {
                     weekday: "long",
@@ -141,26 +141,26 @@ export default function DettaglioDegustazionePage({
                 </span>
               </div>
               {tasting.occasione && (
-                <div className="flex items-center gap-2 text-gray-700">
-                  <PartyPopper className="h-5 w-5 text-gray-400" />
+                <div className="flex items-center gap-2 text-gray-700 dark:text-slate-300">
+                  <PartyPopper className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                   <span>{tasting.occasione}</span>
                 </div>
               )}
               {tasting.abbinamento_cibo && (
-                <div className="flex items-center gap-2 text-gray-700">
-                  <UtensilsCrossed className="h-5 w-5 text-gray-400" />
+                <div className="flex items-center gap-2 text-gray-700 dark:text-slate-300">
+                  <UtensilsCrossed className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                   <span>{tasting.abbinamento_cibo}</span>
                 </div>
               )}
               {tasting.partecipanti && tasting.partecipanti.length > 0 && (
-                <div className="flex items-start gap-2 text-gray-700">
-                  <Users className="h-5 w-5 text-gray-400 mt-0.5" />
+                <div className="flex items-start gap-2 text-gray-700 dark:text-slate-300">
+                  <Users className="h-5 w-5 text-gray-400 dark:text-slate-500 mt-0.5" />
                   <div>
                     <div className="font-medium">
                       {tasting.partecipanti.length} partecipant
                       {tasting.partecipanti.length === 1 ? "e" : "i"}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 dark:text-slate-400">
                       {tasting.partecipanti.join(", ")}
                     </div>
                   </div>
@@ -171,11 +171,11 @@ export default function DettaglioDegustazionePage({
 
           {/* Aspetto Visivo */}
           {tasting.aspetto_visivo && (
-            <div className="rounded-lg bg-white p-6 shadow">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                 Aspetto Visivo
               </h2>
-              <p className="whitespace-pre-wrap text-gray-700">
+              <p className="whitespace-pre-wrap text-gray-700 dark:text-slate-300">
                 {tasting.aspetto_visivo}
               </p>
             </div>
@@ -183,11 +183,11 @@ export default function DettaglioDegustazionePage({
 
           {/* Profumo */}
           {tasting.profumo && (
-            <div className="rounded-lg bg-white p-6 shadow">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                 Profumo
               </h2>
-              <p className="whitespace-pre-wrap text-gray-700">
+              <p className="whitespace-pre-wrap text-gray-700 dark:text-slate-300">
                 {tasting.profumo}
               </p>
             </div>
@@ -195,11 +195,11 @@ export default function DettaglioDegustazionePage({
 
           {/* Gusto */}
           {tasting.gusto && (
-            <div className="rounded-lg bg-white p-6 shadow">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                 Gusto
               </h2>
-              <p className="whitespace-pre-wrap text-gray-700">
+              <p className="whitespace-pre-wrap text-gray-700 dark:text-slate-300">
                 {tasting.gusto}
               </p>
             </div>
@@ -207,25 +207,25 @@ export default function DettaglioDegustazionePage({
 
           {/* Note Generali */}
           {tasting.note_generali && (
-            <div className="rounded-lg bg-white p-6 shadow">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                 Note Generali
               </h2>
-              <p className="whitespace-pre-wrap text-gray-700">
+              <p className="whitespace-pre-wrap text-gray-700 dark:text-slate-300">
                 {tasting.note_generali}
               </p>
             </div>
           )}
 
           {/* Link al vino */}
-          <div className="rounded-lg bg-wine-50 p-6">
-            <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-wine-900">
+          <div className="rounded-lg bg-wine-50 dark:bg-wine-900/20 border border-transparent dark:border-wine-800/50 p-6">
+            <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-wine-900 dark:text-wine-200">
               <Wine className="h-4 w-4" />
               Vino Degustato
             </h3>
             <Link
               href={`/vini/${tasting.wine_id}`}
-              className="inline-flex items-center text-wine-600 hover:text-wine-700"
+              className="inline-flex items-center text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300"
             >
               <span>Vedi scheda completa "{tasting.wine.nome}"</span>
               <span className="ml-2">→</span>
@@ -233,8 +233,8 @@ export default function DettaglioDegustazionePage({
           </div>
 
           {/* Metadata */}
-          <div className="rounded-lg bg-gray-100 p-4">
-            <div className="flex justify-between text-xs text-gray-500">
+          <div className="rounded-lg bg-gray-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-slate-400">
               <span>
                 Registrata il{" "}
                 {new Date(tasting.created_at).toLocaleDateString("it-IT")}
@@ -251,18 +251,18 @@ export default function DettaglioDegustazionePage({
       {/* Modal conferma eliminazione */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className="w-full max-w-md rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-700 p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
               Conferma eliminazione
             </h3>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               Sei sicuro di voler eliminare questa degustazione di "
               {tasting.wine.nome}"? Questa azione non può essere annullata.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="rounded-md border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700"
               >
                 Annulla
               </button>

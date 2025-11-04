@@ -40,27 +40,27 @@ export default function BottigliePage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
                 Le Mie Bottiglie
               </h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 {filteredBottles?.length || 0} bottigli
                 {filteredBottles?.length === 1 ? "a" : "e"} in inventario
               </p>
@@ -124,7 +124,7 @@ export default function BottigliePage() {
 
       {/* Filtri e ricerca */}
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-6 rounded-lg bg-white p-4 shadow">
+        <div className="mb-6 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {/* Ricerca testuale */}
             <div className="lg:col-span-2">
@@ -133,14 +133,14 @@ export default function BottigliePage() {
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Search className="h-5 w-5 text-gray-400" />
+                  <Search className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                 </div>
                 <input
                   type="text"
                   id="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-10 pr-3 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
                   placeholder="Cerca per nome, produttore, fornitore, barcode..."
                 />
               </div>
@@ -155,7 +155,7 @@ export default function BottigliePage() {
                 id="location-filter"
                 value={filterLocation}
                 onChange={(e) => setFilterLocation(e.target.value)}
-                className="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
               >
                 <option value="">Tutte le ubicazioni</option>
                 {locations?.map((loc) => (
@@ -175,7 +175,7 @@ export default function BottigliePage() {
                 id="stato-filter"
                 value={filterStato}
                 onChange={(e) => setFilterStato(e.target.value)}
-                className="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
               >
                 <option value="">Tutti gli stati</option>
                 {statiMaturita.map((stato) => (
@@ -191,33 +191,33 @@ export default function BottigliePage() {
           {(searchQuery || filterLocation || filterStato) && (
             <div className="mt-4 flex flex-wrap gap-2">
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 px-3 py-1 text-sm text-wine-800">
+                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm text-wine-800 dark:text-wine-200">
                   Ricerca: "{searchQuery}"
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="hover:text-wine-900"
+                    className="hover:text-wine-900 dark:hover:text-wine-100"
                   >
                     ×
                   </button>
                 </span>
               )}
               {filterLocation && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 px-3 py-1 text-sm text-wine-800">
+                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm text-wine-800 dark:text-wine-200">
                   Ubicazione: {locations?.find((l) => l.id === filterLocation)?.nome}
                   <button
                     onClick={() => setFilterLocation("")}
-                    className="hover:text-wine-900"
+                    className="hover:text-wine-900 dark:hover:text-wine-100"
                   >
                     ×
                   </button>
                 </span>
               )}
               {filterStato && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 px-3 py-1 text-sm text-wine-800">
+                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm text-wine-800 dark:text-wine-200">
                   Stato: {filterStato}
                   <button
                     onClick={() => setFilterStato("")}
-                    className="hover:text-wine-900"
+                    className="hover:text-wine-900 dark:hover:text-wine-100"
                   >
                     ×
                   </button>
@@ -229,7 +229,7 @@ export default function BottigliePage() {
                   setFilterLocation("");
                   setFilterStato("");
                 }}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200"
               >
                 Cancella tutti
               </button>
@@ -242,9 +242,9 @@ export default function BottigliePage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredBottles.map((bottle) => (
               <Link key={bottle.id} href={`/bottiglie/${bottle.id}`}>
-                <div className="group overflow-hidden rounded-lg bg-white p-6 shadow transition-all hover:shadow-lg">
+                <div className="group overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
                   {bottle.foto_etichetta_url && (
-                    <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md bg-gray-100">
+                    <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md bg-gray-100 dark:bg-slate-700">
                       <Image
                         src={bottle.foto_etichetta_url}
                         alt={bottle.wine.nome}
@@ -253,18 +253,18 @@ export default function BottigliePage() {
                       />
                     </div>
                   )}
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
                     {bottle.wine.nome}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-slate-400">
                     {bottle.wine.produttore}
                   </p>
                   <div className="mt-3 flex items-center justify-between">
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-gray-500 dark:text-slate-400">
                       Quantità: {bottle.quantita}
                     </span>
                     {bottle.barcode && (
-                      <span className="flex items-center gap-1 text-xs text-gray-400">
+                      <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-slate-500">
                         <Barcode className="h-3 w-3" />
                         {bottle.barcode}
                       </span>
@@ -276,10 +276,10 @@ export default function BottigliePage() {
           </div>
         ) : (
           <div className="mt-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-slate-100">
               Nessuna bottiglia trovata
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
               {searchQuery || filterLocation || filterStato
                 ? "Prova a modificare i filtri di ricerca"
                 : "Inizia aggiungendo la tua prima bottiglia"}

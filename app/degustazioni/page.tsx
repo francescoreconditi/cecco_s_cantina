@@ -41,27 +41,27 @@ export default function DegustazioniPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-7xl px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
                 Le Mie Degustazioni
               </h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 {filteredTastings?.length || 0} degustazion
                 {filteredTastings?.length === 1 ? "e" : "i"} registrate
               </p>
@@ -78,7 +78,7 @@ export default function DegustazioniPage() {
 
       {/* Filtri e ricerca */}
       <div className="mx-auto max-w-7xl px-4 py-6">
-        <div className="mb-6 rounded-lg bg-white p-4 shadow">
+        <div className="mb-6 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {/* Ricerca testuale */}
             <div className="lg:col-span-2">
@@ -87,14 +87,14 @@ export default function DegustazioniPage() {
               </label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Search className="h-5 w-5 text-gray-400" />
+                  <Search className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                 </div>
                 <input
                   type="text"
                   id="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 py-2 pl-10 pr-3 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-10 pr-3 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
                   placeholder="Cerca per vino, produttore, occasione, cibo..."
                 />
               </div>
@@ -109,7 +109,7 @@ export default function DegustazioniPage() {
                 id="anno-filter"
                 value={filterAnno}
                 onChange={(e) => setFilterAnno(e.target.value)}
-                className="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
               >
                 <option value="">Tutti gli anni</option>
                 {anni.map((anno) => (
@@ -129,7 +129,7 @@ export default function DegustazioniPage() {
                 id="punteggio-filter"
                 value={filterPunteggioMin}
                 onChange={(e) => setFilterPunteggioMin(e.target.value)}
-                className="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
               >
                 <option value="">Tutti i punteggi</option>
                 <option value="90">90+ punti</option>
@@ -145,33 +145,33 @@ export default function DegustazioniPage() {
           {(searchQuery || filterAnno || filterPunteggioMin) && (
             <div className="mt-4 flex flex-wrap gap-2">
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 px-3 py-1 text-sm text-wine-800">
+                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm text-wine-800 dark:text-wine-200">
                   Ricerca: "{searchQuery}"
                   <button
                     onClick={() => setSearchQuery("")}
-                    className="hover:text-wine-900"
+                    className="hover:text-wine-900 dark:hover:text-wine-100"
                   >
                     ×
                   </button>
                 </span>
               )}
               {filterAnno && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 px-3 py-1 text-sm text-wine-800">
+                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm text-wine-800 dark:text-wine-200">
                   Anno: {filterAnno}
                   <button
                     onClick={() => setFilterAnno("")}
-                    className="hover:text-wine-900"
+                    className="hover:text-wine-900 dark:hover:text-wine-100"
                   >
                     ×
                   </button>
                 </span>
               )}
               {filterPunteggioMin && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 px-3 py-1 text-sm text-wine-800">
+                <span className="inline-flex items-center gap-1 rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm text-wine-800 dark:text-wine-200">
                   Punteggio: {filterPunteggioMin}+
                   <button
                     onClick={() => setFilterPunteggioMin("")}
-                    className="hover:text-wine-900"
+                    className="hover:text-wine-900 dark:hover:text-wine-100"
                   >
                     ×
                   </button>
@@ -183,7 +183,7 @@ export default function DegustazioniPage() {
                   setFilterAnno("");
                   setFilterPunteggioMin("");
                 }}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200"
               >
                 Cancella tutti
               </button>
@@ -200,24 +200,24 @@ export default function DegustazioniPage() {
                 href={`/degustazioni/${tasting.id}`}
                 className="block"
               >
-                <div className="rounded-lg bg-white p-6 shadow hover:shadow-md transition-shadow cursor-pointer">
+                <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 transition-shadow cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-gray-900 hover:text-wine-600">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 hover:text-wine-600 dark:hover:text-wine-400">
                           {tasting.wine.nome}
                         </h3>
                         {tasting.punteggio && (
-                          <span className="inline-flex items-center rounded-full bg-wine-100 px-3 py-1 text-sm font-medium text-wine-800">
+                          <span className="inline-flex items-center rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm font-medium text-wine-800 dark:text-wine-200">
                             {tasting.punteggio}/100
                           </span>
                         )}
                       </div>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-slate-400">
                       {tasting.wine.produttore}
                       {tasting.wine.annata && ` - ${tasting.wine.annata}`}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500">
+                    <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-slate-400">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="h-4 w-4" />
                         {new Date(tasting.data).toLocaleDateString("it-IT", {
@@ -250,8 +250,8 @@ export default function DegustazioniPage() {
                   </div>
                 </div>
                 {tasting.note_generali && (
-                  <div className="mt-4 border-t pt-4">
-                    <p className="text-sm text-gray-700 line-clamp-3">
+                  <div className="mt-4 border-t border-gray-200 dark:border-slate-700 pt-4">
+                    <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-3">
                       {tasting.note_generali}
                     </p>
                   </div>
@@ -262,10 +262,10 @@ export default function DegustazioniPage() {
           </div>
         ) : (
           <div className="mt-12 text-center">
-            <h3 className="text-sm font-medium text-gray-900">
+            <h3 className="text-sm font-medium text-gray-900 dark:text-slate-100">
               Nessuna degustazione trovata
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
               {searchQuery || filterAnno || filterPunteggioMin
                 ? "Prova a modificare i filtri di ricerca"
                 : "Inizia a registrare le tue degustazioni"}

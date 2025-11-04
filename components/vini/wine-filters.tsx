@@ -29,7 +29,7 @@ export function WineFilters({
   };
 
   return (
-    <div className="rounded-lg bg-white p-4 shadow">
+    <div className="rounded-lg bg-white dark:bg-slate-800 p-4 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
       <div className="grid gap-4 md:grid-cols-4">
         {/* Ricerca */}
         <div className="md:col-span-2">
@@ -39,7 +39,7 @@ export function WineFilters({
           <div className="relative">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
-                className="h-5 w-5 text-gray-400"
+                className="h-5 w-5 text-gray-400 dark:text-slate-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -57,7 +57,7 @@ export function WineFilters({
               id="search"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+              className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 pl-10 pr-3 py-2 text-sm text-gray-900 dark:text-slate-100 placeholder:text-gray-500 dark:placeholder:text-slate-400 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
               placeholder="Cerca per nome, produttore o denominazione..."
             />
           </div>
@@ -72,7 +72,7 @@ export function WineFilters({
             id="regione"
             value={filterRegione}
             onChange={(e) => onRegioneChange(e.target.value)}
-            className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+            className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
           >
             <option value="">Tutte le regioni</option>
             {regioni.map((regione) => (
@@ -92,7 +92,7 @@ export function WineFilters({
             id="tipologia"
             value={filterTipologia}
             onChange={(e) => onTipologiaChange(e.target.value)}
-            className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+            className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-sm text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
           >
             <option value="">Tutte le tipologie</option>
             {tipologie.map((tipologia) => (

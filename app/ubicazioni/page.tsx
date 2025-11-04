@@ -17,12 +17,12 @@ function LocationTreeNode({ location }: { location: LocationWithChildren }) {
 
   return (
     <div className="ml-4">
-      <div className="group flex items-start gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+      <div className="group flex items-start gap-3 rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-sm dark:shadow-slate-900/50 transition-shadow hover:shadow-md dark:hover:shadow-slate-900/70">
         {/* Icona espandi/comprimi */}
         {hasChildren && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-1 flex-shrink-0 text-gray-400 hover:text-gray-600"
+            className="mt-1 flex-shrink-0 text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300"
           >
             {isExpanded ? (
               <ChevronDown className="h-5 w-5" />
@@ -34,26 +34,26 @@ function LocationTreeNode({ location }: { location: LocationWithChildren }) {
         {!hasChildren && <div className="h-5 w-5 flex-shrink-0" />}
 
         {/* Icona ubicazione */}
-        <MapPin className="mt-1 h-5 w-5 flex-shrink-0 text-wine-600" />
+        <MapPin className="mt-1 h-5 w-5 flex-shrink-0 text-wine-600 dark:text-wine-500" />
 
         {/* Contenuto */}
         <div className="flex-1 min-w-0">
           <Link
             href={`/ubicazioni/${location.id}`}
-            className="block group-hover:text-wine-600"
+            className="block group-hover:text-wine-600 dark:group-hover:text-wine-400"
           >
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
               {location.nome}
             </h3>
             {location.descrizione && (
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 {location.descrizione}
               </p>
             )}
           </Link>
 
           {/* Metadati */}
-          <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-500">
+          <div className="mt-2 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-slate-400">
             {location.temperatura !== null && (
               <span>Temp: {location.temperatura}°C</span>
             )}
@@ -69,7 +69,7 @@ function LocationTreeNode({ location }: { location: LocationWithChildren }) {
 
       {/* Figli (ricorsivo) */}
       {hasChildren && isExpanded && (
-        <div className="mt-2 space-y-2 border-l-2 border-wine-200 pl-4">
+        <div className="mt-2 space-y-2 border-l-2 border-wine-200 dark:border-wine-800 pl-4">
           {location.children.map((child) => (
             <LocationTreeNode key={child.id} location={child} />
           ))}
@@ -116,10 +116,10 @@ export default function UbicazioniPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento ubicazioni...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento ubicazioni...</p>
         </div>
       </div>
     );
@@ -127,9 +127,9 @@ export default function UbicazioniPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg bg-red-50 p-6 text-center">
-          <p className="text-red-800">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-6 text-center">
+          <p className="text-red-800 dark:text-red-300">
             Errore nel caricamento delle ubicazioni:{" "}
             {error instanceof Error ? error.message : "Errore sconosciuto"}
           </p>
@@ -139,18 +139,18 @@ export default function UbicazioniPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       {/* Header Pagina */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
                 Le Mie Ubicazioni
               </h1>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
                 Gestisci i luoghi di conservazione della tua cantina
               </p>
             </div>
@@ -173,7 +173,7 @@ export default function UbicazioniPage() {
             placeholder="Cerca ubicazioni..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-wine-500 focus:outline-none focus:ring-2 focus:ring-wine-500"
+            className="w-full rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 px-4 py-2 focus:border-wine-500 focus:outline-none focus:ring-2 focus:ring-wine-500"
           />
         </div>
 
@@ -186,11 +186,11 @@ export default function UbicazioniPage() {
           </div>
         ) : (
           <div className="mt-12 text-center">
-            <MapPin className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
+            <MapPin className="mx-auto h-12 w-12 text-gray-400 dark:text-slate-600" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-slate-100">
               Nessuna ubicazione trovata
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
               {searchQuery
                 ? "Prova a modificare il termine di ricerca"
                 : "Inizia creando la tua prima ubicazione"}

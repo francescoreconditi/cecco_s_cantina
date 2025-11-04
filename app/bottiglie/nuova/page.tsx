@@ -87,12 +87,12 @@ export default function NuovaBottigliaPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="mx-auto max-w-3xl px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
             Aggiungi Bottiglia
           </h1>
         </div>
@@ -101,8 +101,8 @@ export default function NuovaBottigliaPage() {
       <div className="mx-auto max-w-3xl px-4 py-8">
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Selezione Vino */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <label className="block text-sm font-medium text-gray-700">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
               Vino *
             </label>
             <select
@@ -111,7 +111,7 @@ export default function NuovaBottigliaPage() {
               onChange={(e) =>
                 setFormData({ ...formData, wine_id: e.target.value })
               }
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+              className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
             >
               <option value="">Seleziona un vino...</option>
               {wines?.map((wine) => (
@@ -122,19 +122,19 @@ export default function NuovaBottigliaPage() {
             </select>
             <Link
               href="/vini/nuovo"
-              className="mt-2 inline-block text-sm text-wine-600"
+              className="mt-2 inline-block text-sm text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300"
             >
               + Crea nuovo vino
             </Link>
           </div>
 
           {/* Foto + Barcode */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h3 className="mb-4 font-semibold">Foto e Barcode</h3>
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h3 className="mb-4 font-semibold text-gray-900 dark:text-slate-100">Foto e Barcode</h3>
 
             {/* Upload foto */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                 Foto Etichetta
               </label>
               <input
@@ -143,20 +143,20 @@ export default function NuovaBottigliaPage() {
                 accept="image/*"
                 capture="environment"
                 onChange={handlePhotoChange}
-                className="mt-1 block w-full text-sm"
+                className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 dark:file:bg-wine-900/50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 dark:file:text-wine-300 hover:file:bg-wine-100 dark:hover:file:bg-wine-900"
               />
               {photoPreview && (
                 <img
                   src={photoPreview}
                   alt="Preview"
-                  className="mt-2 h-48 w-auto rounded-md"
+                  className="mt-2 h-48 w-auto rounded-md border border-gray-200 dark:border-slate-700"
                 />
               )}
             </div>
 
             {/* Barcode */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                 Barcode
               </label>
               <div className="mt-1 flex gap-2">
@@ -166,13 +166,13 @@ export default function NuovaBottigliaPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, barcode: e.target.value })
                   }
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                  className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="Inserisci o scansiona"
                 />
                 <button
                   type="button"
                   onClick={() => setShowScanner(true)}
-                  className="flex items-center gap-2 rounded-md bg-wine-600 px-4 py-2 text-sm text-white hover:bg-wine-500"
+                  className="flex items-center gap-2 rounded-md bg-wine-600 dark:bg-wine-700 px-4 py-2 text-sm text-white hover:bg-wine-500 dark:hover:bg-wine-600"
                 >
                   <ScanLine className="h-4 w-4" />
                   Scansiona
@@ -182,11 +182,11 @@ export default function NuovaBottigliaPage() {
           </div>
 
           {/* Dettagli */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h3 className="mb-4 font-semibold">Dettagli</h3>
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h3 className="mb-4 font-semibold text-gray-900 dark:text-slate-100">Dettagli</h3>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Quantità *
                 </label>
                 <input
@@ -197,11 +197,11 @@ export default function NuovaBottigliaPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, quantita: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Prezzo Acquisto (€)
                 </label>
                 <input
@@ -214,11 +214,11 @@ export default function NuovaBottigliaPage() {
                       prezzo_acquisto: e.target.value,
                     })
                   }
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Data Acquisto
                 </label>
                 <input
@@ -227,11 +227,11 @@ export default function NuovaBottigliaPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, data_acquisto: e.target.value })
                   }
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Stato Maturità
                 </label>
                 <select
@@ -242,7 +242,7 @@ export default function NuovaBottigliaPage() {
                       stato_maturita: e.target.value,
                     })
                   }
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 >
                   <option value="">Seleziona...</option>
                   <option value="pronta">Pronta</option>
@@ -257,14 +257,14 @@ export default function NuovaBottigliaPage() {
           <div className="flex justify-end gap-3">
             <Link
               href="/bottiglie"
-              className="rounded-md border px-4 py-2 text-sm font-semibold"
+              className="rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700"
             >
               Annulla
             </Link>
             <button
               type="submit"
               disabled={createBottle.isPending || uploadLabel.isPending}
-              className="rounded-md bg-wine-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-md bg-wine-600 dark:bg-wine-700 px-4 py-2 text-sm font-semibold text-white hover:bg-wine-500 dark:hover:bg-wine-600 disabled:opacity-50"
             >
               {createBottle.isPending || uploadLabel.isPending
                 ? "Salvataggio..."
@@ -276,7 +276,7 @@ export default function NuovaBottigliaPage() {
 
       {/* Scanner Barcode Modal */}
       {showScanner && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 dark:bg-opacity-90">
           <div className="w-full max-w-lg">
             <BarcodeScanner
               onDetected={handleBarcodeDetected}

@@ -72,7 +72,7 @@ export function Breadcrumbs({ items, customLabels = {} }: BreadcrumbsProps) {
     <nav aria-label="Breadcrumb" className="flex items-center space-x-1 text-sm">
       <Link
         href="/dashboard"
-        className="flex items-center text-gray-500 hover:text-wine-600 transition-colors"
+        className="flex items-center text-gray-500 dark:text-slate-400 hover:text-wine-600 dark:hover:text-wine-400 transition-colors"
       >
         <Home className="h-4 w-4" />
         <span className="sr-only">Dashboard</span>
@@ -83,15 +83,15 @@ export function Breadcrumbs({ items, customLabels = {} }: BreadcrumbsProps) {
 
         return (
           <div key={item.href} className="flex items-center space-x-1">
-            <ChevronRight className="h-4 w-4 text-gray-400" />
+            <ChevronRight className="h-4 w-4 text-gray-400 dark:text-slate-600" />
             {isLast ? (
-              <span className="font-medium text-gray-900" aria-current="page">
+              <span className="font-medium text-gray-900 dark:text-slate-100" aria-current="page">
                 {item.label}
               </span>
             ) : (
               <Link
                 href={item.href}
-                className="text-gray-500 hover:text-wine-600 transition-colors"
+                className="text-gray-500 dark:text-slate-400 hover:text-wine-600 dark:hover:text-wine-400 transition-colors"
               >
                 {item.label}
               </Link>

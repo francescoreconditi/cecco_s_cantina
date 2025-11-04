@@ -16,7 +16,11 @@
       "Bash(npx next dev:*)",
       "Bash(rd /s /q .next)",
       "Bash(git clone:*)",
-      "Bash(node vivino.js:*)"
+      "Bash(node vivino.js:*)",
+      "Bash(dir:*)",
+      "Bash(ping:*)",
+      "Bash(nul)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []

@@ -99,10 +99,10 @@ export default function ModificaUbicazionePage({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
         </div>
       </div>
     );
@@ -110,14 +110,14 @@ export default function ModificaUbicazionePage({
 
   if (error || !location) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg bg-red-50 p-6 text-center">
-          <p className="text-red-800">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-6 text-center">
+          <p className="text-red-800 dark:text-red-300">
             Ubicazione non trovata o errore nel caricamento
           </p>
           <Link
             href="/ubicazioni"
-            className="mt-4 inline-block text-sm text-wine-600 hover:text-wine-700"
+            className="mt-4 inline-block text-sm text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300"
           >
             Torna alla lista
           </Link>
@@ -132,19 +132,19 @@ export default function ModificaUbicazionePage({
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       {/* Header Pagina */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
               Modifica Ubicazione
             </h1>
             <Link
               href={`/ubicazioni/${id}`}
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200"
             >
               Annulla
             </Link>
@@ -156,15 +156,15 @@ export default function ModificaUbicazionePage({
       <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Informazioni Principali */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 p-6 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Informazioni Principali
             </h2>
             <div className="space-y-6">
               <div>
                 <label
                   htmlFor="nome"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Nome Ubicazione *
                 </label>
@@ -175,7 +175,7 @@ export default function ModificaUbicazionePage({
                   required
                   value={formData.nome}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. Cantina Principale, Scaffale A1, Cassetto Nord"
                 />
               </div>
@@ -183,7 +183,7 @@ export default function ModificaUbicazionePage({
               <div>
                 <label
                   htmlFor="descrizione"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Descrizione
                 </label>
@@ -193,7 +193,7 @@ export default function ModificaUbicazionePage({
                   rows={3}
                   value={formData.descrizione}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="Aggiungi dettagli sull'ubicazione..."
                 />
               </div>
@@ -201,7 +201,7 @@ export default function ModificaUbicazionePage({
               <div>
                 <label
                   htmlFor="parent_id"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Ubicazione Genitore
                 </label>
@@ -210,7 +210,7 @@ export default function ModificaUbicazionePage({
                   name="parent_id"
                   value={formData.parent_id}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 >
                   <option value="">Nessuna (ubicazione principale)</option>
                   {availableParents?.map((loc) => (
@@ -219,7 +219,7 @@ export default function ModificaUbicazionePage({
                     </option>
                   ))}
                 </select>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
                   Seleziona un'ubicazione genitore per creare una gerarchia
                 </p>
               </div>
@@ -227,15 +227,15 @@ export default function ModificaUbicazionePage({
           </div>
 
           {/* Condizioni Ambientali */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 p-6 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Condizioni Ambientali
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label
                   htmlFor="temperatura"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Temperatura (°C)
                 </label>
@@ -248,10 +248,10 @@ export default function ModificaUbicazionePage({
                   max="40"
                   value={formData.temperatura}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. 14.5"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
                   Temperatura ideale: 12-16°C
                 </p>
               </div>
@@ -259,7 +259,7 @@ export default function ModificaUbicazionePage({
               <div>
                 <label
                   htmlFor="umidita"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Umidità (%)
                 </label>
@@ -272,10 +272,10 @@ export default function ModificaUbicazionePage({
                   max="100"
                   value={formData.umidita}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="es. 70"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
                   Umidità ideale: 60-80%
                 </p>
               </div>
@@ -283,7 +283,7 @@ export default function ModificaUbicazionePage({
               <div className="sm:col-span-2">
                 <label
                   htmlFor="note_ambientali"
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
                 >
                   Note Ambientali
                 </label>
@@ -293,7 +293,7 @@ export default function ModificaUbicazionePage({
                   rows={3}
                   value={formData.note_ambientali}
                   onChange={handleChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="Note su illuminazione, ventilazione, vibrazioni, ecc."
                 />
               </div>
@@ -301,14 +301,14 @@ export default function ModificaUbicazionePage({
           </div>
 
           {/* Capacità */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 p-6 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Capacità
             </h2>
             <div>
               <label
                 htmlFor="capacita_massima"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-gray-700 dark:text-slate-300"
               >
                 Capacità Massima (bottiglie)
               </label>
@@ -319,10 +319,10 @@ export default function ModificaUbicazionePage({
                 min="0"
                 value={formData.capacita_massima}
                 onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 placeholder="es. 50"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
                 Numero massimo di bottiglie che l'ubicazione può contenere
               </p>
             </div>
@@ -330,9 +330,9 @@ export default function ModificaUbicazionePage({
 
           {/* Errore */}
           {submitError && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-800">Errore:</p>
-              <p className="mt-1 text-sm text-red-700">{submitError}</p>
+            <div className="rounded-md bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-4">
+              <p className="text-sm font-medium text-red-800 dark:text-red-300">Errore:</p>
+              <p className="mt-1 text-sm text-red-700 dark:text-red-400">{submitError}</p>
             </div>
           )}
 
@@ -340,14 +340,14 @@ export default function ModificaUbicazionePage({
           <div className="flex justify-end gap-3">
             <Link
               href={`/ubicazioni/${id}`}
-              className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50"
+              className="rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-slate-300 shadow-sm hover:bg-gray-50 dark:hover:bg-slate-700"
             >
               Annulla
             </Link>
             <button
               type="submit"
               disabled={updateLocation.isPending}
-              className="rounded-md bg-wine-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-wine-500 disabled:opacity-50"
+              className="rounded-md bg-wine-600 dark:bg-wine-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-wine-500 dark:hover:bg-wine-600 disabled:opacity-50"
             >
               {updateLocation.isPending
                 ? "Salvataggio..."

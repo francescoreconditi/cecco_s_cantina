@@ -12,11 +12,11 @@ interface WineCardProps {
 export function WineCard({ wine }: WineCardProps) {
   return (
     <Link href={`/vini/${wine.id}`}>
-      <div className="group relative overflow-hidden rounded-lg bg-white p-6 shadow transition-all hover:shadow-lg">
+      <div className="group relative overflow-hidden rounded-lg bg-white dark:bg-slate-800 p-6 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700 transition-all hover:shadow-lg dark:hover:shadow-slate-900">
         {/* Badge tipologia */}
         {wine.tipologia && (
           <div className="absolute right-4 top-4">
-            <span className="inline-flex rounded-full bg-wine-100 px-3 py-1 text-xs font-medium text-wine-800">
+            <span className="inline-flex rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-xs font-medium text-wine-800 dark:text-wine-200">
               {wine.tipologia}
             </span>
           </div>
@@ -26,23 +26,23 @@ export function WineCard({ wine }: WineCardProps) {
         <div className="space-y-3">
           {/* Nome vino */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-wine-600">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
               {wine.nome}
             </h3>
             {wine.produttore && (
-              <p className="text-sm text-gray-600">{wine.produttore}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400">{wine.produttore}</p>
             )}
           </div>
 
           {/* Denominazione */}
           {wine.denominazione && (
-            <p className="text-sm font-medium text-wine-700">
+            <p className="text-sm font-medium text-wine-700 dark:text-wine-400">
               {wine.denominazione}
             </p>
           )}
 
           {/* Dettagli */}
-          <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-slate-400">
             {wine.annata && (
               <span className="flex items-center">
                 <svg
@@ -98,13 +98,13 @@ export function WineCard({ wine }: WineCardProps) {
               {wine.vitigni.slice(0, 3).map((vitigno, index) => (
                 <span
                   key={index}
-                  className="inline-flex rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700"
+                  className="inline-flex rounded-md bg-gray-100 dark:bg-slate-700 px-2 py-1 text-xs text-gray-700 dark:text-slate-300"
                 >
                   {vitigno}
                 </span>
               ))}
               {wine.vitigni.length > 3 && (
-                <span className="inline-flex items-center text-xs text-gray-500">
+                <span className="inline-flex items-center text-xs text-gray-500 dark:text-slate-400">
                   +{wine.vitigni.length - 3}
                 </span>
               )}
@@ -118,7 +118,7 @@ export function WineCard({ wine }: WineCardProps) {
         </div>
 
         {/* Arrow indicator */}
-        <div className="absolute bottom-4 right-4 text-gray-400 transition-transform group-hover:translate-x-1">
+        <div className="absolute bottom-4 right-4 text-gray-400 dark:text-slate-500 transition-transform group-hover:translate-x-1">
           <svg
             className="h-5 w-5"
             fill="none"

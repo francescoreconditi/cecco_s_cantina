@@ -38,10 +38,10 @@ export default function DettaglioBottigliaPage({
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
         <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 border-t-wine-600"></div>
-          <p className="text-gray-600">Caricamento...</p>
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
+          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
         </div>
       </div>
     );
@@ -49,9 +49,9 @@ export default function DettaglioBottigliaPage({
 
   if (error || !bottle) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="rounded-lg bg-red-50 p-6 text-center">
-          <p className="text-red-800">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
+        <div className="rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-6 text-center">
+          <p className="text-red-800 dark:text-red-300">
             Bottiglia non trovata o errore nel caricamento
           </p>
           <Link
@@ -66,23 +66,23 @@ export default function DettaglioBottigliaPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950">
       <Header />
 
       {/* Breadcrumbs */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6 lg:px-8">
           <Breadcrumbs />
         </div>
       </div>
 
       {/* Header Pagina */}
-      <div className="border-b bg-white">
+      <div className="border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800">
         <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <Link
               href="/bottiglie"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              className="text-sm font-medium text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-slate-200"
             >
               ← Torna alla lista
             </Link>
@@ -108,13 +108,13 @@ export default function DettaglioBottigliaPage({
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Foto etichetta con zoom hover */}
         {bottle.foto_etichetta_url && (
-          <div className="mb-8 overflow-hidden rounded-lg bg-white p-4 shadow">
+          <div className="mb-8 overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
             <ImageZoomHover
               src={bottle.foto_etichetta_url}
               alt={`Etichetta ${bottle.wine.nome}`}
               onClick={() => setShowImageZoom(true)}
             />
-            <p className="mt-2 text-center text-sm text-gray-500">
+            <p className="mt-2 text-center text-sm text-gray-500 dark:text-slate-400">
               Passa il mouse per ingrandire • Clicca per visualizzazione completa
             </p>
           </div>
@@ -124,20 +124,20 @@ export default function DettaglioBottigliaPage({
         <div className="mb-8">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-100">
                 {bottle.wine.nome}
               </h1>
-              <p className="mt-2 text-xl text-gray-600">
+              <p className="mt-2 text-xl text-gray-600 dark:text-slate-400">
                 {bottle.wine.produttore}
               </p>
               {bottle.wine.annata && (
-                <p className="mt-1 text-lg text-gray-500">
+                <p className="mt-1 text-lg text-gray-500 dark:text-slate-400">
                   Annata: {bottle.wine.annata}
                 </p>
               )}
             </div>
             {bottle.wine.tipologia && (
-              <span className="inline-flex rounded-full bg-wine-100 px-4 py-2 text-sm font-medium text-wine-800">
+              <span className="inline-flex rounded-full bg-wine-100 dark:bg-wine-900/50 px-4 py-2 text-sm font-medium text-wine-800 dark:text-wine-200">
                 {bottle.wine.tipologia}
               </span>
             )}
@@ -147,33 +147,33 @@ export default function DettaglioBottigliaPage({
         {/* Griglia informazioni */}
         <div className="space-y-6">
           {/* Inventario */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Inventario
             </h2>
             <dl className="grid gap-4 sm:grid-cols-2">
               <div>
-                <dt className="text-sm font-medium text-gray-500">Quantità</dt>
-                <dd className="mt-1 text-2xl font-bold text-wine-600">
+                <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Quantità</dt>
+                <dd className="mt-1 text-2xl font-bold text-wine-600 dark:text-wine-500">
                   {bottle.quantita}
                 </dd>
               </div>
               {bottle.stato_maturita && (
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
                     Stato Maturità
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-slate-100">
                     {bottle.stato_maturita}
                   </dd>
                 </div>
               )}
               {bottle.location_id && (
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
                     Ubicazione
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-slate-100">
                     {bottle.location_id}
                   </dd>
                 </div>
@@ -182,35 +182,35 @@ export default function DettaglioBottigliaPage({
           </div>
 
           {/* Dati acquisto */}
-          <div className="rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Dati Acquisto
             </h2>
             <dl className="grid gap-4 sm:grid-cols-2">
               {bottle.prezzo_acquisto && (
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Prezzo</dt>
-                  <dd className="mt-1 text-sm text-gray-900">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">Prezzo</dt>
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-slate-100">
                     €{bottle.prezzo_acquisto.toFixed(2)}
                   </dd>
                 </div>
               )}
               {bottle.data_acquisto && (
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
                     Data Acquisto
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-slate-100">
                     {new Date(bottle.data_acquisto).toLocaleDateString("it-IT")}
                   </dd>
                 </div>
               )}
               {bottle.fornitore && (
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">
+                  <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
                     Fornitore
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900">
+                  <dd className="mt-1 text-sm text-gray-900 dark:text-slate-100">
                     {bottle.fornitore}
                   </dd>
                 </div>
@@ -220,13 +220,13 @@ export default function DettaglioBottigliaPage({
 
           {/* Codice a barre */}
           {bottle.barcode && (
-            <div className="rounded-lg bg-white p-6 shadow">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
                 Codice a Barre
               </h2>
               <div className="flex items-center gap-2">
-                <Barcode className="h-5 w-5 text-wine-600" />
-                <code className="rounded bg-gray-100 px-3 py-2 text-lg font-mono text-gray-900">
+                <Barcode className="h-5 w-5 text-wine-600 dark:text-wine-500" />
+                <code className="rounded bg-gray-100 dark:bg-slate-700 px-3 py-2 text-lg font-mono text-gray-900 dark:text-slate-100">
                   {bottle.barcode}
                 </code>
               </div>
@@ -235,22 +235,22 @@ export default function DettaglioBottigliaPage({
 
           {/* Note */}
           {bottle.note_private && (
-            <div className="rounded-lg bg-white p-6 shadow">
-              <h2 className="mb-4 text-lg font-semibold text-gray-900">Note</h2>
-              <p className="whitespace-pre-wrap text-sm text-gray-700">
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">Note</h2>
+              <p className="whitespace-pre-wrap text-sm text-gray-700 dark:text-slate-300">
                 {bottle.note_private}
               </p>
             </div>
           )}
 
           {/* Link al vino */}
-          <div className="rounded-lg bg-wine-50 p-6">
-            <h3 className="mb-2 text-sm font-semibold text-wine-900">
+          <div className="rounded-lg bg-wine-50 dark:bg-wine-900/20 border border-transparent dark:border-wine-800/50 p-6">
+            <h3 className="mb-2 text-sm font-semibold text-wine-900 dark:text-wine-200">
               Vino Associato
             </h3>
             <Link
               href={`/vini/${bottle.wine_id}`}
-              className="inline-flex items-center text-wine-600 hover:text-wine-700"
+              className="inline-flex items-center text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300"
             >
               <span>Vedi dettaglio vino "{bottle.wine.nome}"</span>
               <span className="ml-2">→</span>
@@ -258,8 +258,8 @@ export default function DettaglioBottigliaPage({
           </div>
 
           {/* Metadata */}
-          <div className="rounded-lg bg-gray-100 p-4">
-            <div className="flex justify-between text-xs text-gray-500">
+          <div className="rounded-lg bg-gray-100 dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-slate-400">
               <span>
                 Creato il{" "}
                 {new Date(bottle.created_at).toLocaleDateString("it-IT")}
@@ -276,18 +276,18 @@ export default function DettaglioBottigliaPage({
       {/* Modal conferma eliminazione */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className="w-full max-w-md rounded-lg bg-white dark:bg-slate-800 border dark:border-slate-700 p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
               Conferma eliminazione
             </h3>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               Sei sicuro di voler eliminare questa bottiglia di "
               {bottle.wine.nome}"? Questa azione non può essere annullata.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="rounded-md border border-gray-300 dark:border-slate-600 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-700"
               >
                 Annulla
               </button>
