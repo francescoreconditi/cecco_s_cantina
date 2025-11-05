@@ -12,6 +12,7 @@ import Link from "next/link";
 import { WineRegionChart } from "@/components/dashboard/wine-region-chart";
 import { WineTypeChart } from "@/components/dashboard/wine-type-chart";
 import { MaturityTimeline } from "@/components/dashboard/maturity-timeline";
+import { Wine, Package, GlassWater, MapPin } from "lucide-react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -61,9 +62,12 @@ export default function DashboardPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <Link href="/vini">
             <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
-                Vini
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <Wine className="h-6 w-6 text-wine-600 dark:text-wine-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
+                  Vini
+                </h3>
+              </div>
               <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {isLoading ? "..." : stats?.total || 0}
               </p>
@@ -77,9 +81,12 @@ export default function DashboardPage() {
 
           <Link href="/bottiglie">
             <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
-                Bottiglie
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <Package className="h-6 w-6 text-wine-600 dark:text-wine-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
+                  Bottiglie
+                </h3>
+              </div>
               <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {bottleStatsLoading ? "..." : bottleStats?.total || 0}
               </p>
@@ -93,9 +100,12 @@ export default function DashboardPage() {
 
           <Link href="/degustazioni">
             <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
-                Degustazioni
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <GlassWater className="h-6 w-6 text-wine-600 dark:text-wine-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
+                  Degustazioni
+                </h3>
+              </div>
               <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {tastingsLoading ? "..." : tastings?.length || 0}
               </p>
@@ -109,9 +119,12 @@ export default function DashboardPage() {
 
           <Link href="/ubicazioni">
             <div className="group rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
-                Ubicazioni
-              </h3>
+              <div className="flex items-center gap-3 mb-2">
+                <MapPin className="h-6 w-6 text-wine-600 dark:text-wine-400" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400">
+                  Ubicazioni
+                </h3>
+              </div>
               <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
                 {locationsLoading ? "..." : locations?.length || 0}
               </p>

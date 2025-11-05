@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState, useRef, useEffect } from "react";
+import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   useBottle,
@@ -28,7 +28,6 @@ export default function ModificaBottigliaPage({
   const uploadLabel = useUploadLabel();
   const deleteLabel = useDeleteLabel();
   const { data: wines } = useWines();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     wine_id: "",
@@ -41,10 +40,13 @@ export default function ModificaBottigliaPage({
     note: "",
   });
 
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoFileFront, setPhotoFileFront] = useState<File | null>(null);
+  const [photoPreviewFront, setPhotoPreviewFront] = useState<string | null>(null);
+  const [photoFileBack, setPhotoFileBack] = useState<File | null>(null);
+  const [photoPreviewBack, setPhotoPreviewBack] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
-  const [currentPhotoUrl, setCurrentPhotoUrl] = useState<string | null>(null);
+  const [currentPhotoFrontUrl, setCurrentPhotoFrontUrl] = useState<string | null>(null);
+  const [currentPhotoBackUrl, setCurrentPhotoBackUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Popola form quando i dati vengono caricati
@@ -67,26 +69,45 @@ export default function ModificaBottigliaPage({
         fornitore: bottle.fornitore || "",
         note: bottle.note_private || "",
       });
-      setCurrentPhotoUrl(bottle.foto_etichetta_url);
+      setCurrentPhotoFrontUrl(bottle.foto_etichetta_url);
+      setCurrentPhotoBackUrl(bottle.foto_retro_url);
     }
   }, [bottle]);
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChangeFront = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setPhotoFile(file);
+      setPhotoFileFront(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
+        setPhotoPreviewFront(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleRemovePhoto = () => {
-    setPhotoFile(null);
-    setPhotoPreview(null);
-    setCurrentPhotoUrl(null);
+  const handlePhotoChangeBack = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFileBack(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreviewBack(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhotoFront = () => {
+    setPhotoFileFront(null);
+    setPhotoPreviewFront(null);
+    setCurrentPhotoFrontUrl(null);
+  };
+
+  const handleRemovePhotoBack = () => {
+    setPhotoFileBack(null);
+    setPhotoPreviewBack(null);
+    setCurrentPhotoBackUrl(null);
   };
 
   const handleBarcodeDetected = (barcode: string) => {
@@ -99,35 +120,54 @@ export default function ModificaBottigliaPage({
     setError(null);
 
     try {
-      let fotoUrl = currentPhotoUrl;
+      let fotoFronteUrl = currentPhotoFrontUrl;
+      let fotoRetroUrl = currentPhotoBackUrl;
 
-      // Se c'è una nuova foto, carica e elimina la vecchia
-      if (photoFile) {
-        const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user) {
-          // Elimina vecchia foto se esiste
-          if (currentPhotoUrl) {
-            try {
-              await deleteLabel.mutateAsync(currentPhotoUrl);
-            } catch (error) {
-              console.error("Errore eliminazione foto vecchia:", error);
-            }
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // Gestione foto fronte
+      if (photoFileFront && user) {
+        // Elimina vecchia foto fronte se esiste
+        if (currentPhotoFrontUrl) {
+          try {
+            await deleteLabel.mutateAsync(currentPhotoFrontUrl);
+          } catch (error) {
+            console.error("Errore eliminazione foto fronte:", error);
           }
-
-          // Upload nuova foto
-          fotoUrl = await uploadLabel.mutateAsync({
-            file: photoFile,
-            userId: user.id,
-          });
         }
+        // Upload nuova foto fronte
+        fotoFronteUrl = await uploadLabel.mutateAsync({
+          file: photoFileFront,
+          userId: user.id,
+        });
+      }
+      // Se l'utente ha rimosso la foto fronte senza caricare una nuova
+      if (!currentPhotoFrontUrl && !photoFileFront) {
+        fotoFronteUrl = null;
       }
 
-      // Se l'utente ha rimosso la foto senza caricare una nuova
-      if (!currentPhotoUrl && !photoFile) {
-        fotoUrl = null;
+      // Gestione foto retro
+      if (photoFileBack && user) {
+        // Elimina vecchia foto retro se esiste
+        if (currentPhotoBackUrl) {
+          try {
+            await deleteLabel.mutateAsync(currentPhotoBackUrl);
+          } catch (error) {
+            console.error("Errore eliminazione foto retro:", error);
+          }
+        }
+        // Upload nuova foto retro
+        fotoRetroUrl = await uploadLabel.mutateAsync({
+          file: photoFileBack,
+          userId: user.id,
+        });
+      }
+      // Se l'utente ha rimosso la foto retro senza caricare una nuova
+      if (!currentPhotoBackUrl && !photoFileBack) {
+        fotoRetroUrl = null;
       }
 
       // Aggiorna bottiglia
@@ -141,7 +181,8 @@ export default function ModificaBottigliaPage({
             ? parseFloat(formData.prezzo_acquisto)
             : null,
           barcode: formData.barcode || null,
-          foto_etichetta_url: fotoUrl,
+          foto_etichetta_url: fotoFronteUrl,
+          foto_retro_url: fotoRetroUrl,
           stato_maturita: formData.stato_maturita || null,
           fornitore: formData.fornitore || null,
           note_private: formData.note || null,
@@ -244,54 +285,97 @@ export default function ModificaBottigliaPage({
           <div className="rounded-lg bg-white dark:bg-slate-800 p-6 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
             <h3 className="mb-4 font-semibold text-gray-900 dark:text-slate-100">Foto e Barcode</h3>
 
-            {/* Foto attuale o preview nuova */}
-            {(currentPhotoUrl || photoPreview) && (
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                  Foto Attuale
-                </label>
-                <div className="relative mt-2 inline-block">
-                  {photoPreview ? (
-                    <img
-                      src={photoPreview}
-                      alt="Preview"
-                      className="h-48 w-auto rounded-md border border-gray-200 dark:border-slate-600"
-                    />
-                  ) : currentPhotoUrl ? (
-                    <div className="relative h-48 w-48">
-                      <Image
-                        src={currentPhotoUrl}
-                        alt="Etichetta"
-                        fill
-                        className="rounded-md object-cover border border-gray-200 dark:border-slate-600"
-                      />
-                    </div>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={handleRemovePhoto}
-                    className="absolute right-2 top-2 rounded-full bg-red-600 dark:bg-red-700 p-2 text-white hover:bg-red-700 dark:hover:bg-red-600"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Upload nuova foto */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                {currentPhotoUrl || photoPreview
-                  ? "Cambia Foto Etichetta"
-                  : "Aggiungi Foto Etichetta"}
+            {/* Foto Fronte */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                Foto Etichetta Fronte
               </label>
+
+              {/* Foto attuale fronte o preview nuova */}
+              {(currentPhotoFrontUrl || photoPreviewFront) && (
+                <div className="mb-3">
+                  <div className="relative inline-block">
+                    {photoPreviewFront ? (
+                      <img
+                        src={photoPreviewFront}
+                        alt="Preview Fronte"
+                        className="h-48 w-auto rounded-md border border-gray-200 dark:border-slate-600"
+                      />
+                    ) : currentPhotoFrontUrl ? (
+                      <div className="relative h-48 w-48">
+                        <Image
+                          src={currentPhotoFrontUrl}
+                          alt="Etichetta Fronte"
+                          fill
+                          className="rounded-md object-cover border border-gray-200 dark:border-slate-600"
+                        />
+                      </div>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={handleRemovePhotoFront}
+                      className="absolute right-2 top-2 rounded-full bg-red-600 dark:bg-red-700 p-2 text-white hover:bg-red-700 dark:hover:bg-red-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Upload nuova foto fronte */}
               <input
-                ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
-                onChange={handlePhotoChange}
-                className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100"
+                onChange={handlePhotoChangeFront}
+                className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 dark:file:bg-wine-900/50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 dark:file:text-wine-300 hover:file:bg-wine-100 dark:hover:file:bg-wine-900"
+              />
+            </div>
+
+            {/* Foto Retro */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                Foto Etichetta Retro
+              </label>
+
+              {/* Foto attuale retro o preview nuova */}
+              {(currentPhotoBackUrl || photoPreviewBack) && (
+                <div className="mb-3">
+                  <div className="relative inline-block">
+                    {photoPreviewBack ? (
+                      <img
+                        src={photoPreviewBack}
+                        alt="Preview Retro"
+                        className="h-48 w-auto rounded-md border border-gray-200 dark:border-slate-600"
+                      />
+                    ) : currentPhotoBackUrl ? (
+                      <div className="relative h-48 w-48">
+                        <Image
+                          src={currentPhotoBackUrl}
+                          alt="Etichetta Retro"
+                          fill
+                          className="rounded-md object-cover border border-gray-200 dark:border-slate-600"
+                        />
+                      </div>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={handleRemovePhotoBack}
+                      className="absolute right-2 top-2 rounded-full bg-red-600 dark:bg-red-700 p-2 text-white hover:bg-red-700 dark:hover:bg-red-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Upload nuova foto retro */}
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoChangeBack}
+                className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 dark:file:bg-wine-900/50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 dark:file:text-wine-300 hover:file:bg-wine-100 dark:hover:file:bg-wine-900"
               />
             </div>
 

@@ -36,6 +36,12 @@ export async function getBottles() {
           bottle.foto_etichetta_url = signedUrl;
         }
       }
+      if (bottle.foto_retro_url) {
+        const signedUrl = await getLabelSignedUrl(bottle.foto_retro_url);
+        if (signedUrl) {
+          bottle.foto_retro_url = signedUrl;
+        }
+      }
       return bottle;
     })
   );
@@ -65,6 +71,14 @@ export async function getBottle(id: string) {
     const signedUrl = await getLabelSignedUrl(data.foto_etichetta_url);
     if (signedUrl) {
       data.foto_etichetta_url = signedUrl;
+    }
+  }
+
+  // Se c'è una foto retro (path), converti in signed URL
+  if (data.foto_retro_url) {
+    const signedUrl = await getLabelSignedUrl(data.foto_retro_url);
+    if (signedUrl) {
+      data.foto_retro_url = signedUrl;
     }
   }
 

@@ -99,7 +99,10 @@ export default function NuovoVinoPage() {
       router.push("/vini");
     } catch (error) {
       console.error("Errore creazione vino:", error);
-      const errorMessage = error instanceof Error ? error.message : "Errore durante la creazione del vino. Riprova.";
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Errore durante la creazione del vino. Riprova.";
       setError(errorMessage);
     }
   };
@@ -416,7 +419,9 @@ export default function NuovoVinoPage() {
 
           {/* Note */}
           <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">Note</h2>
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
+              Note
+            </h2>
             <div>
               <label
                 htmlFor="note"
@@ -439,8 +444,12 @@ export default function NuovoVinoPage() {
           {/* Errore */}
           {error && (
             <div className="rounded-md bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 p-4">
-              <p className="text-sm font-medium text-red-800 dark:text-red-300">Errore:</p>
-              <p className="mt-1 text-sm text-red-700 dark:text-red-400">{error}</p>
+              <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                Errore:
+              </p>
+              <p className="mt-1 text-sm text-red-700 dark:text-red-400">
+                {error}
+              </p>
             </div>
           )}
 

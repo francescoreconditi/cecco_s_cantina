@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreateBottle, useUploadLabel } from "@/lib/hooks/use-bottles";
 import { useWines } from "@/lib/hooks/use-wines";
@@ -15,7 +15,6 @@ export default function NuovaBottigliaPage() {
   const createBottle = useCreateBottle();
   const uploadLabel = useUploadLabel();
   const { data: wines } = useWines();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     wine_id: "",
@@ -26,17 +25,31 @@ export default function NuovaBottigliaPage() {
     stato_maturita: "",
   });
 
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoFileFront, setPhotoFileFront] = useState<File | null>(null);
+  const [photoPreviewFront, setPhotoPreviewFront] = useState<string | null>(null);
+  const [photoFileBack, setPhotoFileBack] = useState<File | null>(null);
+  const [photoPreviewBack, setPhotoPreviewBack] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChangeFront = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setPhotoFile(file);
+      setPhotoFileFront(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
+        setPhotoPreviewFront(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePhotoChangeBack = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFileBack(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreviewBack(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -51,20 +64,28 @@ export default function NuovaBottigliaPage() {
     e.preventDefault();
 
     try {
-      let fotoUrl = null;
+      let fotoFronteUrl = null;
+      let fotoRetroUrl = null;
 
-      // Upload foto se presente
-      if (photoFile) {
-        const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (user) {
-          fotoUrl = await uploadLabel.mutateAsync({
-            file: photoFile,
-            userId: user.id,
-          });
-        }
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // Upload foto fronte se presente
+      if (photoFileFront && user) {
+        fotoFronteUrl = await uploadLabel.mutateAsync({
+          file: photoFileFront,
+          userId: user.id,
+        });
+      }
+
+      // Upload foto retro se presente
+      if (photoFileBack && user) {
+        fotoRetroUrl = await uploadLabel.mutateAsync({
+          file: photoFileBack,
+          userId: user.id,
+        });
       }
 
       // Crea bottiglia
@@ -76,7 +97,8 @@ export default function NuovaBottigliaPage() {
           ? parseFloat(formData.prezzo_acquisto)
           : null,
         barcode: formData.barcode || null,
-        foto_etichetta_url: fotoUrl,
+        foto_etichetta_url: fotoFronteUrl,
+        foto_retro_url: fotoRetroUrl,
         stato_maturita: formData.stato_maturita || null,
       });
 
@@ -132,23 +154,43 @@ export default function NuovaBottigliaPage() {
           <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
             <h3 className="mb-4 font-semibold text-gray-900 dark:text-slate-100">Foto e Barcode</h3>
 
-            {/* Upload foto */}
+            {/* Upload foto fronte */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
-                Foto Etichetta
+                Foto Etichetta Fronte
               </label>
               <input
-                ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 capture="environment"
-                onChange={handlePhotoChange}
+                onChange={handlePhotoChangeFront}
                 className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 dark:file:bg-wine-900/50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 dark:file:text-wine-300 hover:file:bg-wine-100 dark:hover:file:bg-wine-900"
               />
-              {photoPreview && (
+              {photoPreviewFront && (
                 <img
-                  src={photoPreview}
-                  alt="Preview"
+                  src={photoPreviewFront}
+                  alt="Preview Fronte"
+                  className="mt-2 h-48 w-auto rounded-md border border-gray-200 dark:border-slate-700"
+                />
+              )}
+            </div>
+
+            {/* Upload foto retro */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                Foto Etichetta Retro
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoChangeBack}
+                className="mt-1 block w-full text-sm text-gray-900 dark:text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-wine-50 dark:file:bg-wine-900/50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-wine-700 dark:file:text-wine-300 hover:file:bg-wine-100 dark:hover:file:bg-wine-900"
+              />
+              {photoPreviewBack && (
+                <img
+                  src={photoPreviewBack}
+                  alt="Preview Retro"
                   className="mt-2 h-48 w-auto rounded-md border border-gray-200 dark:border-slate-700"
                 />
               )}

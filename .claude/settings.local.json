@@ -20,7 +20,8 @@
       "Bash(dir:*)",
       "Bash(ping:*)",
       "Bash(nul)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(where:*)"
     ],
     "deny": [],
     "ask": []

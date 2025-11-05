@@ -26,6 +26,7 @@ export default function DettaglioBottigliaPage({
   const deleteBottle = useDeleteBottle();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showImageZoom, setShowImageZoom] = useState(false);
+  const [zoomImageType, setZoomImageType] = useState<'front' | 'back'>('front');
 
   const handleDelete = async () => {
     try {
@@ -106,17 +107,48 @@ export default function DettaglioBottigliaPage({
 
       {/* Contenuto principale */}
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Foto etichetta con zoom hover */}
-        {bottle.foto_etichetta_url && (
-          <div className="mb-8 overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
-            <ImageZoomHover
-              src={bottle.foto_etichetta_url}
-              alt={`Etichetta ${bottle.wine.nome}`}
-              onClick={() => setShowImageZoom(true)}
-            />
-            <p className="mt-2 text-center text-sm text-gray-500 dark:text-slate-400">
-              Passa il mouse per ingrandire • Clicca per visualizzazione completa
-            </p>
+        {/* Foto etichette con zoom hover */}
+        {(bottle.foto_etichetta_url || bottle.foto_retro_url) && (
+          <div className="mb-8 grid gap-4 sm:grid-cols-2">
+            {/* Foto Fronte */}
+            {bottle.foto_etichetta_url && (
+              <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
+                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-slate-300">
+                  Etichetta Fronte
+                </h3>
+                <ImageZoomHover
+                  src={bottle.foto_etichetta_url}
+                  alt={`Etichetta Fronte ${bottle.wine.nome}`}
+                  onClick={() => {
+                    setZoomImageType('front');
+                    setShowImageZoom(true);
+                  }}
+                />
+                <p className="mt-2 text-center text-sm text-gray-500 dark:text-slate-400">
+                  Passa il mouse per ingrandire • Clicca per zoom
+                </p>
+              </div>
+            )}
+
+            {/* Foto Retro */}
+            {bottle.foto_retro_url && (
+              <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
+                <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-slate-300">
+                  Etichetta Retro
+                </h3>
+                <ImageZoomHover
+                  src={bottle.foto_retro_url}
+                  alt={`Etichetta Retro ${bottle.wine.nome}`}
+                  onClick={() => {
+                    setZoomImageType('back');
+                    setShowImageZoom(true);
+                  }}
+                />
+                <p className="mt-2 text-center text-sm text-gray-500 dark:text-slate-400">
+                  Passa il mouse per ingrandire • Clicca per zoom
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -304,7 +336,7 @@ export default function DettaglioBottigliaPage({
       )}
 
       {/* Modal zoom interattivo */}
-      {showImageZoom && bottle.foto_etichetta_url && (
+      {showImageZoom && (zoomImageType === 'front' ? bottle.foto_etichetta_url : bottle.foto_retro_url) && (
         <div className="fixed inset-0 z-50 bg-black">
           {/* Header con controlli */}
           <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black to-transparent p-4">
@@ -313,15 +345,46 @@ export default function DettaglioBottigliaPage({
               <p className="text-sm text-gray-300">
                 {bottle.wine.produttore}
                 {bottle.wine.annata && ` • ${bottle.wine.annata}`}
+                {' • '}
+                <span className="font-semibold">
+                  {zoomImageType === 'front' ? 'Fronte' : 'Retro'}
+                </span>
               </p>
             </div>
-            <button
-              onClick={() => setShowImageZoom(false)}
-              className="rounded-full bg-white bg-opacity-20 p-2 text-white transition-all hover:bg-opacity-30"
-              aria-label="Chiudi"
-            >
-              <X className="h-6 w-6" />
-            </button>
+            <div className="flex gap-2">
+              {/* Pulsanti per cambiare vista */}
+              {bottle.foto_etichetta_url && bottle.foto_retro_url && (
+                <div className="flex gap-1 rounded-full bg-white bg-opacity-20 p-1">
+                  <button
+                    onClick={() => setZoomImageType('front')}
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
+                      zoomImageType === 'front'
+                        ? 'bg-white text-black'
+                        : 'text-white hover:bg-white hover:bg-opacity-10'
+                    }`}
+                  >
+                    Fronte
+                  </button>
+                  <button
+                    onClick={() => setZoomImageType('back')}
+                    className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
+                      zoomImageType === 'back'
+                        ? 'bg-white text-black'
+                        : 'text-white hover:bg-white hover:bg-opacity-10'
+                    }`}
+                  >
+                    Retro
+                  </button>
+                </div>
+              )}
+              <button
+                onClick={() => setShowImageZoom(false)}
+                className="rounded-full bg-white bg-opacity-20 p-2 text-white transition-all hover:bg-opacity-30"
+                aria-label="Chiudi"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
           </div>
 
           {/* Contenitore zoom con TransformWrapper */}
@@ -372,12 +435,13 @@ export default function DettaglioBottigliaPage({
                   contentClass="flex items-center justify-center"
                 >
                   <Image
-                    src={bottle.foto_etichetta_url!}
-                    alt={`Etichetta ${bottle.wine.nome} - Zoom`}
+                    src={(zoomImageType === 'front' ? bottle.foto_etichetta_url : bottle.foto_retro_url)!}
+                    alt={`Etichetta ${zoomImageType === 'front' ? 'Fronte' : 'Retro'} ${bottle.wine.nome} - Zoom`}
                     width={1200}
                     height={1600}
                     className="max-h-screen max-w-full object-contain"
                     priority
+                    key={zoomImageType}
                   />
                 </TransformComponent>
               </>

@@ -105,6 +105,7 @@ export interface Database {
           stato_maturita: string | null;
           barcode: string | null;
           foto_etichetta_url: string | null;
+          foto_retro_url: string | null;
           note_posizione: string | null;
           note_private: string | null;
           created_at: string;
@@ -124,6 +125,7 @@ export interface Database {
           stato_maturita?: string | null;
           barcode?: string | null;
           foto_etichetta_url?: string | null;
+          foto_retro_url?: string | null;
           note_posizione?: string | null;
           note_private?: string | null;
           created_at?: string;
@@ -143,6 +145,7 @@ export interface Database {
           stato_maturita?: string | null;
           barcode?: string | null;
           foto_etichetta_url?: string | null;
+          foto_retro_url?: string | null;
           note_posizione?: string | null;
           note_private?: string | null;
           created_at?: string;
