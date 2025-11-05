@@ -58,7 +58,8 @@ export async function getBottle(id: string) {
     .select(
       `
       *,
-      wine:wines(*)
+      wine:wines(*),
+      location:locations(*)
     `
     )
     .eq("id", id)
@@ -93,6 +94,20 @@ export async function getBottlesByWine(wineId: string) {
     .from("bottles")
     .select("*")
     .eq("wine_id", wineId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data as Bottle[];
+}
+
+// Recupera bottiglie per ubicazione
+export async function getBottlesByLocation(locationId: string) {
+  const supabase = createClient();
+
+  const { data, error } = await supabase
+    .from("bottles")
+    .select("*")
+    .eq("location_id", locationId)
     .order("created_at", { ascending: false });
 
   if (error) throw error;

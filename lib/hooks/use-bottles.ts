@@ -7,6 +7,7 @@ import {
   updateBottle,
   deleteBottle,
   getBottlesByWine,
+  getBottlesByLocation,
   getBottleStats,
   uploadLabel,
   deleteLabel,
@@ -39,6 +40,14 @@ export function useBottlesByWine(wineId: string) {
   });
 }
 
+export function useBottlesByLocation(locationId: string) {
+  return useQuery({
+    queryKey: ["bottles", "location", locationId],
+    queryFn: () => getBottlesByLocation(locationId),
+    enabled: !!locationId,
+  });
+}
+
 export function useBottleStats() {
   return useQuery({
     queryKey: ["bottles", "stats"],
@@ -52,8 +61,13 @@ export function useCreateBottle() {
   return useMutation({
     mutationFn: (bottle: Omit<BottleInsert, "id" | "owner_id">) =>
       createBottle(bottle),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      if (data.location_id) {
+        queryClient.invalidateQueries({
+          queryKey: ["bottles", "location", data.location_id],
+        });
+      }
     },
   });
 }
@@ -64,9 +78,14 @@ export function useUpdateBottle() {
   return useMutation({
     mutationFn: ({ id, bottle }: { id: string; bottle: BottleUpdate }) =>
       updateBottle(id, bottle),
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["bottles", variables.id] });
       queryClient.invalidateQueries({ queryKey: ["bottles"] });
+      if (data.location_id) {
+        queryClient.invalidateQueries({
+          queryKey: ["bottles", "location", data.location_id],
+        });
+      }
     },
   });
 }

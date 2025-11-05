@@ -7,9 +7,12 @@ import {
   useDeleteLocation,
   useChildLocations,
 } from "@/lib/hooks/use-locations";
+import { useBottlesByLocation } from "@/lib/hooks/use-bottles";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { CellarPositionDisplay } from "@/components/ubicazioni/cellar-position-display";
+import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 import {
   MapPin,
   Thermometer,
@@ -28,8 +31,22 @@ export default function DettaglioUbicazionePage({
   const { id } = use(params);
   const { data: location, isLoading, error } = useLocation(id);
   const { data: childLocations } = useChildLocations(id);
+  const { data: bottles } = useBottlesByLocation(id);
   const deleteLocation = useDeleteLocation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Estrai tutte le posizioni occupate dalle bottiglie in questa ubicazione
+  const occupiedPositions: CellarPosition[] = bottles
+    ? bottles.flatMap((bottle) => {
+        if (
+          bottle.posizioni_cantina &&
+          Array.isArray(bottle.posizioni_cantina)
+        ) {
+          return bottle.posizioni_cantina as CellarPosition[];
+        }
+        return [];
+      })
+    : [];
 
   const handleDelete = async () => {
     try {
@@ -194,19 +211,95 @@ export default function DettaglioUbicazionePage({
           )}
 
           {/* Capacità */}
-          {location.capacita_massima !== null && (
+          {(location.capacita_massima !== null ||
+            location.nr_file !== null ||
+            location.bottiglie_fila_dispari !== null ||
+            location.bottiglie_fila_pari !== null) && (
             <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
               <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-gray-900 dark:text-slate-100">
                 <Package className="h-5 w-5 text-wine-600 dark:text-wine-500" />
                 Capacità
               </h2>
-              <div>
-                <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
-                  Capacità Massima
-                </dt>
-                <dd className="mt-1 text-2xl font-semibold text-gray-900 dark:text-slate-100">
-                  {location.capacita_massima} bottiglie
-                </dd>
+              <div className="space-y-6">
+                {location.capacita_massima !== null && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
+                      Capacità Massima
+                    </dt>
+                    <dd className="mt-1 text-2xl font-semibold text-gray-900 dark:text-slate-100">
+                      {location.capacita_massima} bottiglie
+                    </dd>
+                  </div>
+                )}
+
+                {/* Layout Fisico */}
+                {(location.nr_file !== null ||
+                  location.bottiglie_fila_dispari !== null ||
+                  location.bottiglie_fila_pari !== null) && (
+                  <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
+                    <h3 className="mb-3 text-base font-semibold text-gray-900 dark:text-slate-100">
+                      Layout Fisico
+                    </h3>
+                    <dl className="grid gap-4 sm:grid-cols-3 mb-6">
+                      {location.nr_file !== null && (
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
+                            Numero di File
+                          </dt>
+                          <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-slate-100">
+                            {location.nr_file}
+                          </dd>
+                          <dd className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                            Righe totali
+                          </dd>
+                        </div>
+                      )}
+                      {location.bottiglie_fila_dispari !== null && (
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
+                            Bottiglie Fila Dispari
+                          </dt>
+                          <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-slate-100">
+                            {location.bottiglie_fila_dispari}
+                          </dd>
+                          <dd className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                            File 1ª, 3ª, 5ª...
+                          </dd>
+                        </div>
+                      )}
+                      {location.bottiglie_fila_pari !== null && (
+                        <div>
+                          <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
+                            Bottiglie Fila Pari
+                          </dt>
+                          <dd className="mt-1 text-xl font-semibold text-gray-900 dark:text-slate-100">
+                            {location.bottiglie_fila_pari}
+                          </dd>
+                          <dd className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                            File 2ª, 4ª, 6ª...
+                          </dd>
+                        </div>
+                      )}
+                    </dl>
+
+                    {/* Rappresentazione Grafica */}
+                    {location.nr_file !== null &&
+                      location.bottiglie_fila_dispari !== null &&
+                      location.bottiglie_fila_pari !== null && (
+                        <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
+                          <h4 className="mb-4 text-sm font-semibold text-gray-900 dark:text-slate-100">
+                            Rappresentazione Visiva
+                          </h4>
+                          <CellarPositionDisplay
+                            nr_file={location.nr_file}
+                            bottiglie_fila_dispari={location.bottiglie_fila_dispari}
+                            bottiglie_fila_pari={location.bottiglie_fila_pari}
+                            positions={occupiedPositions}
+                          />
+                        </div>
+                      )}
+                  </div>
+                )}
               </div>
             </div>
           )}

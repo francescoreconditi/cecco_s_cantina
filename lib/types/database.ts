@@ -100,6 +100,7 @@ export interface Database {
           prezzo_acquisto: number | null;
           fornitore: string | null;
           location_id: string | null;
+          posizioni_cantina: Json | null;
           pronto_da: string | null;
           meglio_entro: string | null;
           stato_maturita: string | null;
@@ -120,6 +121,7 @@ export interface Database {
           prezzo_acquisto?: number | null;
           fornitore?: string | null;
           location_id?: string | null;
+          posizioni_cantina?: Json | null;
           pronto_da?: string | null;
           meglio_entro?: string | null;
           stato_maturita?: string | null;
@@ -140,6 +142,7 @@ export interface Database {
           prezzo_acquisto?: number | null;
           fornitore?: string | null;
           location_id?: string | null;
+          posizioni_cantina?: Json | null;
           pronto_da?: string | null;
           meglio_entro?: string | null;
           stato_maturita?: string | null;
@@ -213,6 +216,9 @@ export interface Database {
           umidita: number | null;
           note_ambientali: string | null;
           capacita_massima: number | null;
+          nr_file: number | null;
+          bottiglie_fila_dispari: number | null;
+          bottiglie_fila_pari: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -226,6 +232,9 @@ export interface Database {
           umidita?: number | null;
           note_ambientali?: string | null;
           capacita_massima?: number | null;
+          nr_file?: number | null;
+          bottiglie_fila_dispari?: number | null;
+          bottiglie_fila_pari?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -239,6 +248,9 @@ export interface Database {
           umidita?: number | null;
           note_ambientali?: string | null;
           capacita_massima?: number | null;
+          nr_file?: number | null;
+          bottiglie_fila_dispari?: number | null;
+          bottiglie_fila_pari?: number | null;
           created_at?: string;
           updated_at?: string;
         };

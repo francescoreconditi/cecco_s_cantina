@@ -9,6 +9,8 @@ import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { BarcodeScanner } from "@/components/bottiglie/barcode-scanner";
 import { Header } from "@/components/layout/header";
+import { CellarPositionSelector } from "@/components/ubicazioni/cellar-position-selector";
+import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 import { ScanLine } from "lucide-react";
 
 export default function NuovaBottigliaPage() {
@@ -33,6 +35,7 @@ export default function NuovaBottigliaPage() {
   const [photoFileBack, setPhotoFileBack] = useState<File | null>(null);
   const [photoPreviewBack, setPhotoPreviewBack] = useState<string | null>(null);
   const [showScanner, setShowScanner] = useState(false);
+  const [selectedPositions, setSelectedPositions] = useState<CellarPosition[]>([]);
 
   const handlePhotoChangeFront = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -104,6 +107,7 @@ export default function NuovaBottigliaPage() {
         foto_retro_url: fotoRetroUrl,
         stato_maturita: formData.stato_maturita || null,
         location_id: formData.location_id || null,
+        posizioni_cantina: selectedPositions.length > 0 ? selectedPositions : null,
       });
 
       router.push("/bottiglie");
@@ -296,18 +300,20 @@ export default function NuovaBottigliaPage() {
                   <option value="oltre_picco">Oltre il picco</option>
                 </select>
               </div>
-              <div>
+              <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
                   Ubicazione
                 </label>
                 <select
                   value={formData.location_id}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setFormData({
                       ...formData,
                       location_id: e.target.value,
-                    })
-                  }
+                    });
+                    // Reset posizioni quando cambia ubicazione
+                    setSelectedPositions([]);
+                  }}
                   className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 >
                   <option value="">Seleziona...</option>
@@ -318,6 +324,29 @@ export default function NuovaBottigliaPage() {
                   ))}
                 </select>
               </div>
+
+              {/* Selettore Posizioni Cantina */}
+              {formData.location_id && (() => {
+                const selectedLocation = locations?.find((loc) => loc.id === formData.location_id);
+                return selectedLocation?.nr_file &&
+                  selectedLocation?.bottiglie_fila_dispari &&
+                  selectedLocation?.bottiglie_fila_pari ? (
+                  <div className="sm:col-span-2 border-t border-gray-200 dark:border-slate-700 pt-6">
+                    <h3 className="mb-4 text-base font-semibold text-gray-900 dark:text-slate-100">
+                      Seleziona Posizioni in Cantina
+                    </h3>
+                    <CellarPositionSelector
+                      nr_file={selectedLocation.nr_file}
+                      bottiglie_fila_dispari={selectedLocation.bottiglie_fila_dispari}
+                      bottiglie_fila_pari={selectedLocation.bottiglie_fila_pari}
+                      quantita={parseInt(formData.quantita) || 1}
+                      selectedPositions={selectedPositions}
+                      onPositionsChange={setSelectedPositions}
+                      occupiedPositions={[]}
+                    />
+                  </div>
+                ) : null;
+              })()}
             </div>
           </div>
 

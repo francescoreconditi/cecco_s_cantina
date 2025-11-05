@@ -16,6 +16,8 @@ import { BarcodeScanner } from "@/components/bottiglie/barcode-scanner";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { ScanLine, AlertCircle } from "lucide-react";
+import { CellarPositionSelector } from "@/components/ubicazioni/cellar-position-selector";
+import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 
 export default function ModificaBottigliaPage({
   params,
@@ -51,6 +53,7 @@ export default function ModificaBottigliaPage({
   const [currentPhotoFrontUrl, setCurrentPhotoFrontUrl] = useState<string | null>(null);
   const [currentPhotoBackUrl, setCurrentPhotoBackUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPositions, setSelectedPositions] = useState<CellarPosition[]>([]);
 
   // Popola form quando i dati vengono caricati
   useEffect(() => {
@@ -75,6 +78,13 @@ export default function ModificaBottigliaPage({
       });
       setCurrentPhotoFrontUrl(bottle.foto_etichetta_url);
       setCurrentPhotoBackUrl(bottle.foto_retro_url);
+
+      // Carica posizioni esistenti
+      if (bottle.posizioni_cantina && Array.isArray(bottle.posizioni_cantina)) {
+        setSelectedPositions(bottle.posizioni_cantina as CellarPosition[]);
+      } else {
+        setSelectedPositions([]);
+      }
     }
   }, [bottle]);
 
@@ -189,6 +199,7 @@ export default function ModificaBottigliaPage({
           foto_retro_url: fotoRetroUrl,
           stato_maturita: formData.stato_maturita || null,
           location_id: formData.location_id || null,
+          posizioni_cantina: selectedPositions.length > 0 ? selectedPositions : null,
           fornitore: formData.fornitore || null,
           note_private: formData.note || null,
         },
@@ -486,12 +497,14 @@ export default function ModificaBottigliaPage({
                 </label>
                 <select
                   value={formData.location_id}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setFormData({
                       ...formData,
                       location_id: e.target.value,
-                    })
-                  }
+                    });
+                    // Reset posizioni quando cambia ubicazione
+                    setSelectedPositions([]);
+                  }}
                   className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                 >
                   <option value="">Seleziona...</option>
@@ -517,6 +530,29 @@ export default function ModificaBottigliaPage({
                 />
               </div>
             </div>
+
+            {/* Seleziona Posizioni in Cantina */}
+            {formData.location_id && (() => {
+              const selectedLocation = locations?.find((loc) => loc.id === formData.location_id);
+              return selectedLocation?.nr_file &&
+                selectedLocation?.bottiglie_fila_dispari &&
+                selectedLocation?.bottiglie_fila_pari ? (
+                <div className="mt-6 border-t border-gray-200 dark:border-slate-700 pt-6">
+                  <h3 className="mb-4 text-base font-semibold text-gray-900 dark:text-slate-100">
+                    Seleziona Posizioni in Cantina
+                  </h3>
+                  <CellarPositionSelector
+                    nr_file={selectedLocation.nr_file}
+                    bottiglie_fila_dispari={selectedLocation.bottiglie_fila_dispari}
+                    bottiglie_fila_pari={selectedLocation.bottiglie_fila_pari}
+                    quantita={parseInt(formData.quantita) || 1}
+                    selectedPositions={selectedPositions}
+                    onPositionsChange={setSelectedPositions}
+                    occupiedPositions={[]}
+                  />
+                </div>
+              ) : null;
+            })()}
           </div>
 
           {/* Note */}

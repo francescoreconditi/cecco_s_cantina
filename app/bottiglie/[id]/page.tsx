@@ -12,6 +12,8 @@ import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ImageZoomHover } from "@/components/ui/image-zoom-hover";
+import { CellarPositionDisplay } from "@/components/ubicazioni/cellar-position-display";
+import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { Barcode, X, ZoomIn as ZoomInIcon, ZoomOut, RotateCcw } from "lucide-react";
 
@@ -200,18 +202,44 @@ export default function DettaglioBottigliaPage({
                   </dd>
                 </div>
               )}
-              {bottle.location_id && (
+              {bottle.location && (
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
                     Ubicazione
                   </dt>
-                  <dd className="mt-1 text-sm text-gray-900 dark:text-slate-100">
-                    {bottle.location_id}
+                  <dd className="mt-1">
+                    <Link
+                      href={`/ubicazioni/${bottle.location.id}`}
+                      className="text-sm text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300 font-medium"
+                    >
+                      {bottle.location.nome}
+                    </Link>
                   </dd>
                 </div>
               )}
             </dl>
           </div>
+
+          {/* Visualizzazione Cantina */}
+          {bottle.location &&
+            bottle.location.nr_file &&
+            bottle.location.bottiglie_fila_dispari &&
+            bottle.location.bottiglie_fila_pari &&
+            bottle.posizioni_cantina &&
+            Array.isArray(bottle.posizioni_cantina) &&
+            bottle.posizioni_cantina.length > 0 && (
+              <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+                <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
+                  Posizioni in Cantina
+                </h2>
+                <CellarPositionDisplay
+                  nr_file={bottle.location.nr_file}
+                  bottiglie_fila_dispari={bottle.location.bottiglie_fila_dispari}
+                  bottiglie_fila_pari={bottle.location.bottiglie_fila_pari}
+                  positions={bottle.posizioni_cantina as CellarPosition[]}
+                />
+              </div>
+            )}
 
           {/* Dati acquisto */}
           <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">

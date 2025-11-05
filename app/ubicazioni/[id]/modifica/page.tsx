@@ -9,6 +9,7 @@ import {
 } from "@/lib/hooks/use-locations";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
+import { CellarLayout } from "@/components/ubicazioni/cellar-layout";
 
 export default function ModificaUbicazionePage({
   params,
@@ -30,6 +31,9 @@ export default function ModificaUbicazionePage({
     temperatura: "",
     umidita: "",
     capacita_massima: "",
+    nr_file: "",
+    bottiglie_fila_dispari: "",
+    bottiglie_fila_pari: "",
     note_ambientali: "",
   });
 
@@ -46,6 +50,16 @@ export default function ModificaUbicazionePage({
         capacita_massima:
           location.capacita_massima !== null
             ? location.capacita_massima.toString()
+            : "",
+        nr_file:
+          location.nr_file !== null ? location.nr_file.toString() : "",
+        bottiglie_fila_dispari:
+          location.bottiglie_fila_dispari !== null
+            ? location.bottiglie_fila_dispari.toString()
+            : "",
+        bottiglie_fila_pari:
+          location.bottiglie_fila_pari !== null
+            ? location.bottiglie_fila_pari.toString()
             : "",
         note_ambientali: location.note_ambientali || "",
       });
@@ -68,6 +82,13 @@ export default function ModificaUbicazionePage({
         umidita: formData.umidita ? parseFloat(formData.umidita) : null,
         capacita_massima: formData.capacita_massima
           ? parseInt(formData.capacita_massima)
+          : null,
+        nr_file: formData.nr_file ? parseInt(formData.nr_file) : null,
+        bottiglie_fila_dispari: formData.bottiglie_fila_dispari
+          ? parseInt(formData.bottiglie_fila_dispari)
+          : null,
+        bottiglie_fila_pari: formData.bottiglie_fila_pari
+          ? parseInt(formData.bottiglie_fila_pari)
           : null,
         note_ambientali: formData.note_ambientali || null,
       };
@@ -305,26 +326,124 @@ export default function ModificaUbicazionePage({
             <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Capacità
             </h2>
-            <div>
-              <label
-                htmlFor="capacita_massima"
-                className="block text-sm font-medium text-gray-700 dark:text-slate-300"
-              >
-                Capacità Massima (bottiglie)
-              </label>
-              <input
-                type="number"
-                id="capacita_massima"
-                name="capacita_massima"
-                min="0"
-                value={formData.capacita_massima}
-                onChange={handleChange}
-                className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
-                placeholder="es. 50"
-              />
-              <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
-                Numero massimo di bottiglie che l'ubicazione può contenere
-              </p>
+            <div className="space-y-6">
+              <div>
+                <label
+                  htmlFor="capacita_massima"
+                  className="block text-sm font-medium text-gray-700 dark:text-slate-300"
+                >
+                  Capacità Massima (bottiglie)
+                </label>
+                <input
+                  type="number"
+                  id="capacita_massima"
+                  name="capacita_massima"
+                  min="0"
+                  value={formData.capacita_massima}
+                  onChange={handleChange}
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
+                  placeholder="es. 50"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                  Numero massimo di bottiglie che l'ubicazione può contenere
+                </p>
+              </div>
+
+              {/* Configurazione Layout Fisico */}
+              <div className="border-t border-gray-200 dark:border-slate-700 pt-6">
+                <h3 className="mb-2 text-base font-semibold text-gray-900 dark:text-slate-100">
+                  Layout Fisico (opzionale)
+                </h3>
+                <p className="mb-4 text-sm text-gray-600 dark:text-slate-400">
+                  Configura la struttura fisica della cantina per una rappresentazione visiva
+                </p>
+                <div className="grid gap-6 sm:grid-cols-3">
+                  <div>
+                    <label
+                      htmlFor="nr_file"
+                      className="block text-sm font-medium text-gray-700 dark:text-slate-300"
+                    >
+                      Numero di File
+                    </label>
+                    <input
+                      type="number"
+                      id="nr_file"
+                      name="nr_file"
+                      min="0"
+                      value={formData.nr_file}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
+                      placeholder="es. 5"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                      Righe totali
+                    </p>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="bottiglie_fila_dispari"
+                      className="block text-sm font-medium text-gray-700 dark:text-slate-300"
+                    >
+                      Bottiglie Fila Dispari
+                    </label>
+                    <input
+                      type="number"
+                      id="bottiglie_fila_dispari"
+                      name="bottiglie_fila_dispari"
+                      min="0"
+                      value={formData.bottiglie_fila_dispari}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
+                      placeholder="es. 10"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                      File 1ª, 3ª, 5ª...
+                    </p>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="bottiglie_fila_pari"
+                      className="block text-sm font-medium text-gray-700 dark:text-slate-300"
+                    >
+                      Bottiglie Fila Pari
+                    </label>
+                    <input
+                      type="number"
+                      id="bottiglie_fila_pari"
+                      name="bottiglie_fila_pari"
+                      min="0"
+                      value={formData.bottiglie_fila_pari}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
+                      placeholder="es. 9"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                      File 2ª, 4ª, 6ª...
+                    </p>
+                  </div>
+                </div>
+
+                {/* Anteprima Layout */}
+                {formData.nr_file &&
+                  formData.bottiglie_fila_dispari &&
+                  formData.bottiglie_fila_pari &&
+                  parseInt(formData.nr_file) > 0 &&
+                  parseInt(formData.bottiglie_fila_dispari) > 0 &&
+                  parseInt(formData.bottiglie_fila_pari) > 0 && (
+                    <div className="mt-6 border-t border-gray-200 dark:border-slate-700 pt-6">
+                      <h4 className="mb-4 text-sm font-semibold text-gray-900 dark:text-slate-100">
+                        Anteprima Layout
+                      </h4>
+                      <CellarLayout
+                        nr_file={parseInt(formData.nr_file)}
+                        bottiglie_fila_dispari={parseInt(formData.bottiglie_fila_dispari)}
+                        bottiglie_fila_pari={parseInt(formData.bottiglie_fila_pari)}
+                      />
+                    </div>
+                  )}
+              </div>
             </div>
           </div>
 
