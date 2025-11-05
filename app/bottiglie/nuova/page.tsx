@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreateBottle, useUploadLabel } from "@/lib/hooks/use-bottles";
 import { useWines } from "@/lib/hooks/use-wines";
+import { useLocations } from "@/lib/hooks/use-locations";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { BarcodeScanner } from "@/components/bottiglie/barcode-scanner";
@@ -15,6 +16,7 @@ export default function NuovaBottigliaPage() {
   const createBottle = useCreateBottle();
   const uploadLabel = useUploadLabel();
   const { data: wines } = useWines();
+  const { data: locations } = useLocations();
 
   const [formData, setFormData] = useState({
     wine_id: "",
@@ -23,6 +25,7 @@ export default function NuovaBottigliaPage() {
     prezzo_acquisto: "",
     barcode: "",
     stato_maturita: "",
+    location_id: "",
   });
 
   const [photoFileFront, setPhotoFileFront] = useState<File | null>(null);
@@ -100,6 +103,7 @@ export default function NuovaBottigliaPage() {
         foto_etichetta_url: fotoFronteUrl,
         foto_retro_url: fotoRetroUrl,
         stato_maturita: formData.stato_maturita || null,
+        location_id: formData.location_id || null,
       });
 
       router.push("/bottiglie");
@@ -290,6 +294,28 @@ export default function NuovaBottigliaPage() {
                   <option value="pronta">Pronta</option>
                   <option value="in_evoluzione">In evoluzione</option>
                   <option value="oltre_picco">Oltre il picco</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">
+                  Ubicazione
+                </label>
+                <select
+                  value={formData.location_id}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      location_id: e.target.value,
+                    })
+                  }
+                  className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
+                >
+                  <option value="">Seleziona...</option>
+                  {locations?.map((location) => (
+                    <option key={location.id} value={location.id}>
+                      {location.nome}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

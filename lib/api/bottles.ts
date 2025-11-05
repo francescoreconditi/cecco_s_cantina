@@ -260,7 +260,7 @@ export async function getBottleStats() {
 
   const { data, error } = await supabase
     .from("bottles")
-    .select("id, quantita, stato_maturita");
+    .select("id, quantita, stato_maturita, prezzo_acquisto");
 
   if (error) throw error;
 
@@ -274,9 +274,17 @@ export async function getBottleStats() {
     {} as Record<string, number>
   );
 
+  // Calcola valore totale (prezzo_acquisto * quantita)
+  const totalValue = data.reduce((sum, b) => {
+    const price = b.prezzo_acquisto || 0;
+    const quantity = b.quantita || 0;
+    return sum + (price * quantity);
+  }, 0);
+
   return {
     total,
     byMaturity,
     count: data.length,
+    totalValue,
   };
 }

@@ -14,6 +14,7 @@ export default function ViniPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRegione, setFilterRegione] = useState<string>("");
   const [filterTipologia, setFilterTipologia] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"card" | "list">("card");
 
   // Filtra vini localmente
   const filteredWines = wines?.filter((wine) => {
@@ -120,15 +121,96 @@ export default function ViniPage() {
           onTipologiaChange={setFilterTipologia}
           regioni={regioni}
           tipologie={tipologie}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
         />
 
         {/* Lista vini */}
         {filteredWines && filteredWines.length > 0 ? (
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredWines.map((wine) => (
-              <WineCard key={wine.id} wine={wine} />
-            ))}
-          </div>
+          viewMode === "card" ? (
+            <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredWines.map((wine) => (
+                <WineCard key={wine.id} wine={wine} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-6 overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 shadow dark:shadow-slate-900/50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Vino
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Anno
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Regione
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Tipologia
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Denominazione
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                  {filteredWines.map((wine) => (
+                    <tr
+                      key={wine.id}
+                      className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Link
+                          href={`/vini/${wine.id}`}
+                          className="group flex items-center gap-3"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400 transition-colors truncate">
+                              {wine.nome}
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-slate-400 truncate">
+                              {wine.produttore}
+                            </div>
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-200">
+                        {wine.annata || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-200">
+                        {wine.regione || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-200">
+                        {wine.tipologia || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-slate-200">
+                        <div className="max-w-xs truncate">
+                          {wine.denominazione || "-"}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         ) : (
           <div className="mt-12 text-center">
             <svg

@@ -12,7 +12,7 @@ import Link from "next/link";
 import { WineRegionChart } from "@/components/dashboard/wine-region-chart";
 import { WineTypeChart } from "@/components/dashboard/wine-type-chart";
 import { MaturityTimeline } from "@/components/dashboard/maturity-timeline";
-import { Wine, Package, GlassWater, MapPin } from "lucide-react";
+import { Wine, Package, GlassWater, MapPin, Euro } from "lucide-react";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -135,6 +135,26 @@ export default function DashboardPage() {
               </p>
             </div>
           </Link>
+
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <div className="flex items-center gap-3 mb-2">
+              <Euro className="h-6 w-6 text-wine-600 dark:text-wine-400" />
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+                Valore Totale
+              </h3>
+            </div>
+            <p className="mt-2 text-3xl font-bold text-wine-600 dark:text-wine-500">
+              {bottleStatsLoading
+                ? "..."
+                : new Intl.NumberFormat("it-IT", {
+                    style: "currency",
+                    currency: "EUR",
+                  }).format(bottleStats?.totalValue || 0)}
+            </p>
+            <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+              Valore totale dell'inventario
+            </p>
+          </div>
         </div>
 
         {/* Sezione Grafici */}

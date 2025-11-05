@@ -8,7 +8,11 @@ interface WineFiltersProps {
   onTipologiaChange: (tipologia: string) => void;
   regioni: string[];
   tipologie: string[];
+  viewMode?: "card" | "list";
+  onViewModeChange?: (mode: "card" | "list") => void;
 }
+
+import { LayoutGrid, List } from "lucide-react";
 
 export function WineFilters({
   searchQuery,
@@ -19,6 +23,8 @@ export function WineFilters({
   onTipologiaChange,
   regioni,
   tipologie,
+  viewMode,
+  onViewModeChange,
 }: WineFiltersProps) {
   const hasActiveFilters = searchQuery || filterRegione || filterTipologia;
 
@@ -30,7 +36,8 @@ export function WineFilters({
 
   return (
     <div className="rounded-lg bg-white dark:bg-slate-800 p-4 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="flex items-end gap-4">
+        <div className="flex-1 grid gap-4 md:grid-cols-4">
         {/* Ricerca */}
         <div className="md:col-span-2">
           <label htmlFor="search" className="sr-only">
@@ -102,6 +109,35 @@ export function WineFilters({
             ))}
           </select>
         </div>
+      </div>
+
+        {/* Toggle visualizzazione */}
+        {viewMode !== undefined && onViewModeChange && (
+          <div className="flex rounded-md border border-gray-300 dark:border-slate-600 overflow-hidden">
+            <button
+              onClick={() => onViewModeChange("card")}
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                viewMode === "card"
+                  ? "bg-wine-600 text-white"
+                  : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+              }`}
+              title="Vista a schede"
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => onViewModeChange("list")}
+              className={`px-3 py-2 text-sm font-medium transition-colors ${
+                viewMode === "list"
+                  ? "bg-wine-600 text-white"
+                  : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+              }`}
+              title="Vista a righe"
+            >
+              <List className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Pulsante reset filtri */}

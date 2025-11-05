@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useTastings } from "@/lib/hooks/use-tastings";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
-import { Calendar, Users, UtensilsCrossed, PartyPopper, Search } from "lucide-react";
+import { Calendar, Users, UtensilsCrossed, PartyPopper, Search, LayoutGrid, List } from "lucide-react";
 
 export default function DegustazioniPage() {
   const { data: tastings, isLoading } = useTastings();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterAnno, setFilterAnno] = useState<string>("");
   const [filterPunteggioMin, setFilterPunteggioMin] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"card" | "list">("card");
 
   // Filtra degustazioni localmente
   const filteredTastings = tastings?.filter((tasting) => {
@@ -79,7 +80,8 @@ export default function DegustazioniPage() {
       {/* Filtri e ricerca */}
       <div className="mx-auto max-w-7xl px-4 py-6">
         <div className="mb-6 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex items-end gap-4">
+            <div className="flex-1 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {/* Ricerca testuale */}
             <div className="lg:col-span-2">
               <label htmlFor="search" className="sr-only">
@@ -141,6 +143,33 @@ export default function DegustazioniPage() {
             </div>
           </div>
 
+            {/* Toggle visualizzazione */}
+            <div className="flex rounded-md border border-gray-300 dark:border-slate-600 overflow-hidden">
+              <button
+                onClick={() => setViewMode("card")}
+                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  viewMode === "card"
+                    ? "bg-wine-600 text-white"
+                    : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+                }`}
+                title="Vista a schede"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  viewMode === "list"
+                    ? "bg-wine-600 text-white"
+                    : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+                }`}
+                title="Vista a righe"
+              >
+                <List className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
           {/* Badge filtri attivi */}
           {(searchQuery || filterAnno || filterPunteggioMin) && (
             <div className="mt-4 flex flex-wrap gap-2">
@@ -193,73 +222,163 @@ export default function DegustazioniPage() {
 
         {/* Lista degustazioni */}
         {filteredTastings && filteredTastings.length > 0 ? (
-          <div className="space-y-4">
-            {filteredTastings.map((tasting) => (
-              <Link
-                key={tasting.id}
-                href={`/degustazioni/${tasting.id}`}
-                className="block"
-              >
-                <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 transition-shadow cursor-pointer">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 hover:text-wine-600 dark:hover:text-wine-400">
-                          {tasting.wine.nome}
-                        </h3>
-                        {tasting.punteggio && (
-                          <span className="inline-flex items-center rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm font-medium text-wine-800 dark:text-wine-200">
-                            {tasting.punteggio}/100
-                          </span>
-                        )}
-                      </div>
-                    <p className="text-sm text-gray-600 dark:text-slate-400">
-                      {tasting.wine.produttore}
-                      {tasting.wine.annata && ` - ${tasting.wine.annata}`}
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-slate-400">
-                      <span className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(tasting.data).toLocaleDateString("it-IT", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </span>
-                      {tasting.occasione && (
+          viewMode === "card" ? (
+            <div className="space-y-4">
+              {filteredTastings.map((tasting) => (
+                <Link
+                  key={tasting.id}
+                  href={`/degustazioni/${tasting.id}`}
+                  className="block"
+                >
+                  <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 hover:shadow-md dark:hover:shadow-slate-900/70 transition-shadow cursor-pointer">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 hover:text-wine-600 dark:hover:text-wine-400">
+                            {tasting.wine.nome}
+                          </h3>
+                          {tasting.punteggio && (
+                            <span className="inline-flex items-center rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm font-medium text-wine-800 dark:text-wine-200">
+                              {tasting.punteggio}/100
+                            </span>
+                          )}
+                        </div>
+                      <p className="text-sm text-gray-600 dark:text-slate-400">
+                        {tasting.wine.produttore}
+                        {tasting.wine.annata && ` - ${tasting.wine.annata}`}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-slate-400">
                         <span className="flex items-center gap-1.5">
-                          <PartyPopper className="h-4 w-4" />
-                          {tasting.occasione}
+                          <Calendar className="h-4 w-4" />
+                          {new Date(tasting.data).toLocaleDateString("it-IT", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
                         </span>
-                      )}
-                      {tasting.abbinamento_cibo && (
-                        <span className="flex items-center gap-1.5">
-                          <UtensilsCrossed className="h-4 w-4" />
-                          {tasting.abbinamento_cibo}
-                        </span>
-                      )}
-                      {tasting.partecipanti &&
-                        tasting.partecipanti.length > 0 && (
+                        {tasting.occasione && (
                           <span className="flex items-center gap-1.5">
-                            <Users className="h-4 w-4" />
-                            {tasting.partecipanti.length}{" "}
-                            partecipant{tasting.partecipanti.length === 1 ? "e" : "i"}
+                            <PartyPopper className="h-4 w-4" />
+                            {tasting.occasione}
                           </span>
                         )}
+                        {tasting.abbinamento_cibo && (
+                          <span className="flex items-center gap-1.5">
+                            <UtensilsCrossed className="h-4 w-4" />
+                            {tasting.abbinamento_cibo}
+                          </span>
+                        )}
+                        {tasting.partecipanti &&
+                          tasting.partecipanti.length > 0 && (
+                            <span className="flex items-center gap-1.5">
+                              <Users className="h-4 w-4" />
+                              {tasting.partecipanti.length}{" "}
+                              partecipant{tasting.partecipanti.length === 1 ? "e" : "i"}
+                            </span>
+                          )}
+                      </div>
                     </div>
                   </div>
+                  {tasting.note_generali && (
+                    <div className="mt-4 border-t border-gray-200 dark:border-slate-700 pt-4">
+                      <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-3">
+                        {tasting.note_generali}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                {tasting.note_generali && (
-                  <div className="mt-4 border-t border-gray-200 dark:border-slate-700 pt-4">
-                    <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-3">
-                      {tasting.note_generali}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </Link>
-            ))}
-          </div>
+              </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 shadow dark:shadow-slate-900/50">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Vino
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Data
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Punteggio
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Occasione
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-slate-400"
+                    >
+                      Abbinamento
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
+                  {filteredTastings.map((tasting) => (
+                    <tr
+                      key={tasting.id}
+                      className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Link
+                          href={`/degustazioni/${tasting.id}`}
+                          className="group"
+                        >
+                          <div className="font-medium text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400 transition-colors">
+                            {tasting.wine.nome}
+                          </div>
+                          <div className="text-sm text-gray-500 dark:text-slate-400">
+                            {tasting.wine.produttore}
+                            {tasting.wine.annata && ` - ${tasting.wine.annata}`}
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-200">
+                        {new Date(tasting.data).toLocaleDateString("it-IT", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {tasting.punteggio ? (
+                          <span className="inline-flex items-center rounded-full bg-wine-100 dark:bg-wine-900/50 px-2.5 py-0.5 text-xs font-medium text-wine-800 dark:text-wine-200">
+                            {tasting.punteggio}/100
+                          </span>
+                        ) : (
+                          <span className="text-gray-400 dark:text-slate-500">-</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-slate-200">
+                        <div className="max-w-xs truncate">
+                          {tasting.occasione || "-"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-slate-200">
+                        <div className="max-w-xs truncate">
+                          {tasting.abbinamento_cibo || "-"}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         ) : (
           <div className="mt-12 text-center">
             <h3 className="text-sm font-medium text-gray-900 dark:text-slate-100">

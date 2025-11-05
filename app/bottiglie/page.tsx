@@ -6,7 +6,7 @@ import { useLocations } from "@/lib/hooks/use-locations";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
-import { Barcode, Search } from "lucide-react";
+import { Barcode, Search, LayoutGrid, List } from "lucide-react";
 import { ExportMenu, ExportIcons } from "@/components/export/export-menu";
 import { exportInventoryExcel, exportInventoryCSV } from "@/lib/export/excel-inventory";
 import { generateBottleLabels } from "@/lib/export/qr-labels";
@@ -17,6 +17,7 @@ export default function BottigliePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterLocation, setFilterLocation] = useState<string>("");
   const [filterStato, setFilterStato] = useState<string>("");
+  const [viewMode, setViewMode] = useState<"card" | "list">("card");
 
   // Filtra bottiglie localmente
   const filteredBottles = bottles?.filter((bottle) => {
@@ -125,65 +126,93 @@ export default function BottigliePage() {
       {/* Filtri e ricerca */}
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="mb-6 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Ricerca testuale */}
-            <div className="lg:col-span-2">
-              <label htmlFor="search" className="sr-only">
-                Cerca
-              </label>
-              <div className="relative">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Search className="h-5 w-5 text-gray-400 dark:text-slate-500" />
+          <div className="flex items-end gap-4">
+            <div className="flex-1 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Ricerca testuale */}
+              <div className="lg:col-span-2">
+                <label htmlFor="search" className="sr-only">
+                  Cerca
+                </label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Search className="h-5 w-5 text-gray-400 dark:text-slate-500" />
+                  </div>
+                  <input
+                    type="text"
+                    id="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-10 pr-3 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                    placeholder="Cerca per nome, produttore, fornitore, barcode..."
+                  />
                 </div>
-                <input
-                  type="text"
-                  id="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-10 pr-3 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
-                  placeholder="Cerca per nome, produttore, fornitore, barcode..."
-                />
+              </div>
+
+              {/* Filtro Ubicazione */}
+              <div>
+                <label htmlFor="location-filter" className="sr-only">
+                  Ubicazione
+                </label>
+                <select
+                  id="location-filter"
+                  value={filterLocation}
+                  onChange={(e) => setFilterLocation(e.target.value)}
+                  className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                >
+                  <option value="">Tutte le ubicazioni</option>
+                  {locations?.map((loc) => (
+                    <option key={loc.id} value={loc.id}>
+                      {loc.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filtro Stato Maturità */}
+              <div>
+                <label htmlFor="stato-filter" className="sr-only">
+                  Stato Maturità
+                </label>
+                <select
+                  id="stato-filter"
+                  value={filterStato}
+                  onChange={(e) => setFilterStato(e.target.value)}
+                  className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                >
+                  <option value="">Tutti gli stati</option>
+                  {statiMaturita.map((stato) => (
+                    <option key={stato} value={stato}>
+                      {stato}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
-            {/* Filtro Ubicazione */}
-            <div>
-              <label htmlFor="location-filter" className="sr-only">
-                Ubicazione
-              </label>
-              <select
-                id="location-filter"
-                value={filterLocation}
-                onChange={(e) => setFilterLocation(e.target.value)}
-                className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+            {/* Toggle visualizzazione */}
+            <div className="flex rounded-md border border-gray-300 dark:border-slate-600 overflow-hidden">
+              <button
+                onClick={() => setViewMode("card")}
+                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  viewMode === "card"
+                    ? "bg-wine-600 text-white"
+                    : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+                }`}
+                title="Vista a schede"
               >
-                <option value="">Tutte le ubicazioni</option>
-                {locations?.map((loc) => (
-                  <option key={loc.id} value={loc.id}>
-                    {loc.nome}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Filtro Stato Maturità */}
-            <div>
-              <label htmlFor="stato-filter" className="sr-only">
-                Stato Maturità
-              </label>
-              <select
-                id="stato-filter"
-                value={filterStato}
-                onChange={(e) => setFilterStato(e.target.value)}
-                className="block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-slate-100 py-2 pl-3 pr-10 text-sm focus:border-wine-500 focus:outline-none focus:ring-wine-500"
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("list")}
+                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  viewMode === "list"
+                    ? "bg-wine-600 text-white"
+                    : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600"
+                }`}
+                title="Vista a righe"
               >
-                <option value="">Tutti gli stati</option>
-                {statiMaturita.map((stato) => (
-                  <option key={stato} value={stato}>
-                    {stato}
-                  </option>
-                ))}
-              </select>
+                <List className="h-4 w-4" />
+              </button>
             </div>
           </div>
 
@@ -239,41 +268,135 @@ export default function BottigliePage() {
 
         {/* Lista bottiglie */}
         {filteredBottles && filteredBottles.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredBottles.map((bottle) => (
-              <Link key={bottle.id} href={`/bottiglie/${bottle.id}`}>
-                <div className="group overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
-                  {bottle.foto_etichetta_url && (
-                    <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md bg-gray-100 dark:bg-slate-700">
-                      <Image
-                        src={bottle.foto_etichetta_url}
-                        alt={bottle.wine.nome}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
-                    {bottle.wine.nome}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">
-                    {bottle.wine.produttore}
-                  </p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-sm text-gray-500 dark:text-slate-400">
-                      Quantità: {bottle.quantita}
-                    </span>
-                    {bottle.barcode && (
-                      <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-slate-500">
-                        <Barcode className="h-3 w-3" />
-                        {bottle.barcode}
-                      </span>
+          viewMode === "card" ? (
+            // Vista a schede
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredBottles.map((bottle) => (
+                <Link key={bottle.id} href={`/bottiglie/${bottle.id}`}>
+                  <div className="group overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
+                    {bottle.foto_etichetta_url && (
+                      <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md bg-gray-100 dark:bg-slate-700">
+                        <Image
+                          src={bottle.foto_etichetta_url}
+                          alt={bottle.wine.nome}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     )}
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
+                      {bottle.wine.nome}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">
+                      {bottle.wine.produttore}
+                    </p>
+                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400">
+                      {bottle.wine.annata && (
+                        <span>{bottle.wine.annata}</span>
+                      )}
+                      {bottle.wine.annata && bottle.prezzo_acquisto && (
+                        <span>•</span>
+                      )}
+                      {bottle.prezzo_acquisto && (
+                        <span className="font-semibold text-wine-600 dark:text-wine-400">
+                          {new Intl.NumberFormat("it-IT", {
+                            style: "currency",
+                            currency: "EUR",
+                          }).format(bottle.prezzo_acquisto)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="text-sm text-gray-500 dark:text-slate-400">
+                        Quantità: {bottle.quantita}
+                      </span>
+                      {bottle.barcode && (
+                        <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-slate-500">
+                          <Barcode className="h-3 w-3" />
+                          {bottle.barcode}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            // Vista a righe
+            <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 shadow dark:shadow-slate-900/50 overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
+                <thead className="bg-gray-50 dark:bg-slate-900">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                      Vino
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                      Anno
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                      Prezzo
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                      Quantità
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                      Stato
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
+                  {filteredBottles.map((bottle) => (
+                    <tr
+                      key={bottle.id}
+                      className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors"
+                    >
+                      <td className="px-6 py-4">
+                        <Link href={`/bottiglie/${bottle.id}`} className="block">
+                          <div className="flex items-center gap-3">
+                            {bottle.foto_etichetta_url && (
+                              <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded bg-gray-100 dark:bg-slate-700">
+                                <Image
+                                  src={bottle.foto_etichetta_url}
+                                  alt={bottle.wine.nome}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            )}
+                            <div>
+                              <div className="font-medium text-gray-900 dark:text-slate-100">
+                                {bottle.wine.nome}
+                              </div>
+                              <div className="text-sm text-gray-500 dark:text-slate-400">
+                                {bottle.wine.produttore}
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                        {bottle.wine.annata || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-wine-600 dark:text-wine-400">
+                        {bottle.prezzo_acquisto
+                          ? new Intl.NumberFormat("it-IT", {
+                              style: "currency",
+                              currency: "EUR",
+                            }).format(bottle.prezzo_acquisto)
+                          : "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                        {bottle.quantita}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
+                        {bottle.stato_maturita || "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
         ) : (
           <div className="mt-12 text-center">
             <h3 className="text-sm font-medium text-gray-900 dark:text-slate-100">
