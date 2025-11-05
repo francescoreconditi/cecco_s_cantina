@@ -11,6 +11,7 @@ import { BarcodeScanner } from "@/components/bottiglie/barcode-scanner";
 import { Header } from "@/components/layout/header";
 import { CellarPositionSelector } from "@/components/ubicazioni/cellar-position-selector";
 import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
+import type { Json } from "@/lib/types/database";
 import { ScanLine } from "lucide-react";
 
 export default function NuovaBottigliaPage() {
@@ -107,7 +108,7 @@ export default function NuovaBottigliaPage() {
         foto_retro_url: fotoRetroUrl,
         stato_maturita: formData.stato_maturita || null,
         location_id: formData.location_id || null,
-        posizioni_cantina: selectedPositions.length > 0 ? selectedPositions : null,
+        posizioni_cantina: selectedPositions.length > 0 ? (selectedPositions as unknown as Json) : null,
       });
 
       router.push("/bottiglie");

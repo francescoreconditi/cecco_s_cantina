@@ -18,6 +18,7 @@ import { Header } from "@/components/layout/header";
 import { ScanLine, AlertCircle } from "lucide-react";
 import { CellarPositionSelector } from "@/components/ubicazioni/cellar-position-selector";
 import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
+import type { Json } from "@/lib/types/database";
 
 export default function ModificaBottigliaPage({
   params,
@@ -81,7 +82,7 @@ export default function ModificaBottigliaPage({
 
       // Carica posizioni esistenti
       if (bottle.posizioni_cantina && Array.isArray(bottle.posizioni_cantina)) {
-        setSelectedPositions(bottle.posizioni_cantina as CellarPosition[]);
+        setSelectedPositions(bottle.posizioni_cantina as unknown as CellarPosition[]);
       } else {
         setSelectedPositions([]);
       }
@@ -199,7 +200,7 @@ export default function ModificaBottigliaPage({
           foto_retro_url: fotoRetroUrl,
           stato_maturita: formData.stato_maturita || null,
           location_id: formData.location_id || null,
-          posizioni_cantina: selectedPositions.length > 0 ? selectedPositions : null,
+          posizioni_cantina: selectedPositions.length > 0 ? (selectedPositions as unknown as Json) : null,
           fornitore: formData.fornitore || null,
           note_private: formData.note || null,
         },

@@ -11,6 +11,12 @@ export type BottleWithWine = Bottle & {
   wine: Database["public"]["Tables"]["wines"]["Row"];
 };
 
+// Tipo esteso con relazioni wine e location
+export type BottleWithDetails = Bottle & {
+  wine: Database["public"]["Tables"]["wines"]["Row"];
+  location: Database["public"]["Tables"]["locations"]["Row"] | null;
+};
+
 // Recupera tutte le bottiglie con info vino
 export async function getBottles() {
   const supabase = createClient();
@@ -83,7 +89,7 @@ export async function getBottle(id: string) {
     }
   }
 
-  return data as BottleWithWine;
+  return data as BottleWithDetails;
 }
 
 // Recupera bottiglie per vino

@@ -236,7 +236,7 @@ export default function DettaglioBottigliaPage({
                   nr_file={bottle.location.nr_file}
                   bottiglie_fila_dispari={bottle.location.bottiglie_fila_dispari}
                   bottiglie_fila_pari={bottle.location.bottiglie_fila_pari}
-                  positions={bottle.posizioni_cantina as CellarPosition[]}
+                  positions={bottle.posizioni_cantina as unknown as CellarPosition[]}
                 />
               </div>
             )}

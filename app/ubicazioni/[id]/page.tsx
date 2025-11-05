@@ -42,7 +42,7 @@ export default function DettaglioUbicazionePage({
           bottle.posizioni_cantina &&
           Array.isArray(bottle.posizioni_cantina)
         ) {
-          return bottle.posizioni_cantina as CellarPosition[];
+          return bottle.posizioni_cantina as unknown as CellarPosition[];
         }
         return [];
       })
