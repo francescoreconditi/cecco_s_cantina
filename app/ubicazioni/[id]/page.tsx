@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   useLocation,
@@ -8,6 +8,7 @@ import {
   useChildLocations,
 } from "@/lib/hooks/use-locations";
 import { useBottlesByLocation } from "@/lib/hooks/use-bottles";
+import { useWines } from "@/lib/hooks/use-wines";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
@@ -32,7 +33,18 @@ export default function DettaglioUbicazionePage({
   const { data: location, isLoading, error } = useLocation(id);
   const { data: childLocations } = useChildLocations(id);
   const { data: bottles } = useBottlesByLocation(id);
+  const { data: wines } = useWines();
   const deleteLocation = useDeleteLocation();
+
+  // Create bottles with wine data for components that need it
+  const bottlesWithWines = useMemo(() => {
+    if (!bottles || !wines) return [];
+    const winesMap = new Map(wines.map(wine => [wine.id, wine]));
+    return bottles.map((bottle) => ({
+      ...bottle,
+      wine: winesMap.get(bottle.wine_id)!,
+    })).filter(b => b.wine);
+  }, [bottles, wines]);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleDelete = async () => {
@@ -274,7 +286,7 @@ export default function DettaglioUbicazionePage({
                             nr_file={location.nr_file}
                             bottiglie_fila_dispari={location.bottiglie_fila_dispari}
                             bottiglie_fila_pari={location.bottiglie_fila_pari}
-                            bottles={bottles}
+                            bottles={bottlesWithWines}
                           />
                         </div>
                       )}

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useBottles } from "@/lib/hooks/use-bottles";
+import { useWines } from "@/lib/hooks/use-wines";
 import { useLocations } from "@/lib/hooks/use-locations";
 import Link from "next/link";
 import Image from "next/image";
@@ -14,18 +15,25 @@ import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function BottigliePage() {
   const { data: bottles, isLoading } = useBottles();
+  const { data: wines } = useWines();
   const { data: locations } = useLocations();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterLocation, setFilterLocation] = useState<string>("");
   const [filterStato, setFilterStato] = useState<string>("");
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
 
+  // Create a map of wine ID to wine for fast lookup
+  const winesMap = useMemo(() => {
+    return new Map(wines?.map(wine => [wine.id, wine]) || []);
+  }, [wines]);
+
   // Filtra bottiglie localmente
   const filteredBottles = bottles?.filter((bottle) => {
+    const wine = winesMap.get(bottle.wine_id);
     const matchSearch =
       !searchQuery ||
-      bottle.wine.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bottle.wine.produttore?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      wine?.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      wine?.produttore?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bottle.fornitore?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bottle.barcode?.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -34,6 +42,12 @@ export default function BottigliePage() {
 
     return matchSearch && matchLocation && matchStato;
   });
+
+  // Create bottles with wine data for export functions
+  const filteredBottlesWithWines = filteredBottles?.map((bottle) => ({
+    ...bottle,
+    wine: winesMap.get(bottle.wine_id)!,
+  })).filter(b => b.wine) || [];
 
   // Estrai stati e ubicazioni uniche per i filtri
   const statiMaturita = Array.from(
@@ -69,8 +83,8 @@ export default function BottigliePage() {
                     icon: ExportIcons.Excel,
                     description: "Export completo con statistiche",
                     action: async () => {
-                      if (filteredBottles && filteredBottles.length > 0) {
-                        await exportInventoryExcel(filteredBottles, {
+                      if (filteredBottlesWithWines && filteredBottlesWithWines.length > 0) {
+                        await exportInventoryExcel(filteredBottlesWithWines, {
                           format: "xlsx",
                           includeValuation: true,
                         });
@@ -83,8 +97,8 @@ export default function BottigliePage() {
                     icon: ExportIcons.CSV,
                     description: "Export semplice formato CSV",
                     action: async () => {
-                      if (filteredBottles && filteredBottles.length > 0) {
-                        await exportInventoryCSV(filteredBottles);
+                      if (filteredBottlesWithWines && filteredBottlesWithWines.length > 0) {
+                        await exportInventoryCSV(filteredBottlesWithWines);
                       }
                     },
                   },
@@ -94,8 +108,8 @@ export default function BottigliePage() {
                     icon: ExportIcons.QR,
                     description: "Stampa etichette con QR code",
                     action: async () => {
-                      if (filteredBottles && filteredBottles.length > 0) {
-                        await generateBottleLabels(filteredBottles, {
+                      if (filteredBottlesWithWines && filteredBottlesWithWines.length > 0) {
+                        await generateBottleLabels(filteredBottlesWithWines, {
                           labelSize: "medium",
                           includeBarcode: true,
                           includePrice: false,
@@ -265,30 +279,32 @@ export default function BottigliePage() {
           viewMode === "card" ? (
             // Vista a schede
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredBottles.map((bottle) => (
+              {filteredBottles.map((bottle) => {
+                const wine = winesMap.get(bottle.wine_id);
+                return (
                 <Link key={bottle.id} href={`/bottiglie/${bottle.id}`}>
                   <div className="group overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50 transition-all hover:shadow-lg dark:hover:shadow-slate-900/70">
                     {bottle.foto_etichetta_url && (
                       <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md bg-gray-100 dark:bg-slate-700">
                         <Image
                           src={bottle.foto_etichetta_url}
-                          alt={bottle.wine.nome}
+                          alt={wine?.nome || 'Vino'}
                           fill
                           className="object-cover"
                         />
                       </div>
                     )}
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
-                      {bottle.wine.nome}
+                      {wine?.nome || 'Vino'}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-slate-400">
-                      {bottle.wine.produttore}
+                      {wine?.produttore}
                     </p>
                     <div className="mt-2 flex items-center gap-2 text-sm text-gray-500 dark:text-slate-400">
-                      {bottle.wine.annata && (
-                        <span>{bottle.wine.annata}</span>
+                      {wine?.annata && (
+                        <span>{wine.annata}</span>
                       )}
-                      {bottle.wine.annata && bottle.prezzo_acquisto && (
+                      {wine?.annata && bottle.prezzo_acquisto && (
                         <span>•</span>
                       )}
                       {bottle.prezzo_acquisto && (
@@ -313,7 +329,8 @@ export default function BottigliePage() {
                     </div>
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           ) : (
             // Vista a righe
@@ -339,7 +356,9 @@ export default function BottigliePage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
-                  {filteredBottles.map((bottle) => (
+                  {filteredBottles.map((bottle) => {
+                    const wine = winesMap.get(bottle.wine_id);
+                    return (
                     <tr
                       key={bottle.id}
                       className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors"
@@ -351,7 +370,7 @@ export default function BottigliePage() {
                               <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded bg-gray-100 dark:bg-slate-700">
                                 <Image
                                   src={bottle.foto_etichetta_url}
-                                  alt={bottle.wine.nome}
+                                  alt={wine?.nome || 'Vino'}
                                   fill
                                   className="object-cover"
                                 />
@@ -359,17 +378,17 @@ export default function BottigliePage() {
                             )}
                             <div>
                               <div className="font-medium text-gray-900 dark:text-slate-100">
-                                {bottle.wine.nome}
+                                {wine?.nome || 'Vino'}
                               </div>
                               <div className="text-sm text-gray-500 dark:text-slate-400">
-                                {bottle.wine.produttore}
+                                {wine?.produttore}
                               </div>
                             </div>
                           </div>
                         </Link>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-slate-400">
-                        {bottle.wine.annata || "-"}
+                        {wine?.annata || "-"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-wine-600 dark:text-wine-400">
                         {bottle.prezzo_acquisto
@@ -386,7 +405,8 @@ export default function BottigliePage() {
                         {bottle.stato_maturita || "-"}
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

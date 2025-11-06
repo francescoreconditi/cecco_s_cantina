@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { AlertCircle, Upload, X } from "lucide-react";
 import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
+import { usePhotoUrl } from "@/lib/hooks/use-photo-url";
 
 export default function ModificaDegustazionePage({
   params,
@@ -23,6 +24,9 @@ export default function ModificaDegustazionePage({
   const uploadPhoto = useUploadTastingPhoto();
   const deletePhoto = useDeleteTastingPhoto();
   const { data: wines } = useWines();
+
+  // Risolvi blob URLs per la foto
+  const photoUrl = usePhotoUrl(tasting?.foto_degustazione_url, "tasting", id);
 
   const [formData, setFormData] = useState({
     wine_id: "",
@@ -189,7 +193,9 @@ export default function ModificaDegustazionePage({
           <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
             Modifica Degustazione
           </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">{tasting.wine.nome}</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+            {wines?.find((w) => w.id === tasting.wine_id)?.nome || "Vino"}
+          </p>
         </div>
       </div>
 
@@ -355,11 +361,11 @@ export default function ModificaDegustazionePage({
             </h2>
             <div className="space-y-4">
               {/* Foto esistente */}
-              {existingPhotoUrl && !photoPreview && (
+              {existingPhotoUrl && photoUrl && !photoPreview && (
                 <div className="relative">
                   <div className="relative h-48 w-full overflow-hidden rounded-lg border-2 border-gray-200 dark:border-slate-600">
                     <Image
-                      src={existingPhotoUrl}
+                      src={photoUrl}
                       alt="Foto degustazione"
                       fill
                       className="object-cover"

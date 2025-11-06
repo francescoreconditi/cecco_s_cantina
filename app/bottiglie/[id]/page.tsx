@@ -7,6 +7,9 @@ import {
   useDeleteBottle,
   useUpdateBottle,
 } from "@/lib/hooks/use-bottles";
+import { useWine } from "@/lib/hooks/use-wines";
+import { useLocation } from "@/lib/hooks/use-locations";
+import { usePhotoUrl } from "@/lib/hooks/use-photo-url";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
@@ -26,6 +29,10 @@ export default function DettaglioBottigliaPage({
   const router = useRouter();
   const { id } = use(params);
   const { data: bottle, isLoading, error } = useBottle(id);
+  const { data: wine } = useWine(bottle?.wine_id || "");
+  const { data: location } = useLocation(bottle?.location_id || "");
+  const labelFrontUrl = usePhotoUrl(bottle?.foto_etichetta_url, "bottle", id);
+  const labelBackUrl = usePhotoUrl(bottle?.foto_retro_url, "bottle", id);
   const deleteBottle = useDeleteBottle();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showImageZoom, setShowImageZoom] = useState(false);
@@ -104,17 +111,17 @@ export default function DettaglioBottigliaPage({
       {/* Contenuto principale */}
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Foto etichette con zoom hover */}
-        {(bottle.foto_etichetta_url || bottle.foto_retro_url) && (
+        {(labelFrontUrl || labelBackUrl) && (
           <div className="mb-8 grid gap-4 sm:grid-cols-2">
             {/* Foto Fronte */}
-            {bottle.foto_etichetta_url && (
+            {labelFrontUrl && (
               <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
                 <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-slate-300">
                   Etichetta Fronte
                 </h3>
                 <ImageZoomHover
-                  src={bottle.foto_etichetta_url}
-                  alt={`Etichetta Fronte ${bottle.wine.nome}`}
+                  src={labelFrontUrl}
+                  alt={`Etichetta Fronte ${wine?.nome || 'Vino'}`}
                   onClick={() => {
                     setZoomImageType('front');
                     setShowImageZoom(true);
@@ -127,14 +134,14 @@ export default function DettaglioBottigliaPage({
             )}
 
             {/* Foto Retro */}
-            {bottle.foto_retro_url && (
+            {labelBackUrl && (
               <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-4 shadow dark:shadow-slate-900/50">
                 <h3 className="mb-2 text-sm font-semibold text-gray-700 dark:text-slate-300">
                   Etichetta Retro
                 </h3>
                 <ImageZoomHover
-                  src={bottle.foto_retro_url}
-                  alt={`Etichetta Retro ${bottle.wine.nome}`}
+                  src={labelBackUrl}
+                  alt={`Etichetta Retro ${wine?.nome || 'Vino'}`}
                   onClick={() => {
                     setZoomImageType('back');
                     setShowImageZoom(true);
@@ -153,20 +160,20 @@ export default function DettaglioBottigliaPage({
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-100">
-                {bottle.wine.nome}
+                {wine?.nome || "Vino"}
               </h1>
               <p className="mt-2 text-xl text-gray-600 dark:text-slate-400">
-                {bottle.wine.produttore}
+                {wine?.produttore}
               </p>
-              {bottle.wine.annata && (
+              {wine?.annata && (
                 <p className="mt-1 text-lg text-gray-500 dark:text-slate-400">
-                  Annata: {bottle.wine.annata}
+                  Annata: {wine.annata}
                 </p>
               )}
             </div>
-            {bottle.wine.tipologia && (
+            {wine?.tipologia && (
               <span className="inline-flex rounded-full bg-wine-100 dark:bg-wine-900/50 px-4 py-2 text-sm font-medium text-wine-800 dark:text-wine-200">
-                {bottle.wine.tipologia}
+                {wine.tipologia}
               </span>
             )}
           </div>
@@ -196,17 +203,17 @@ export default function DettaglioBottigliaPage({
                   </dd>
                 </div>
               )}
-              {bottle.location && (
+              {location && (
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-slate-400">
                     Ubicazione
                   </dt>
                   <dd className="mt-1">
                     <Link
-                      href={`/ubicazioni/${bottle.location.id}`}
+                      href={`/ubicazioni/${location.id}`}
                       className="text-sm text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300 font-medium"
                     >
-                      {bottle.location.nome}
+                      {location.nome}
                     </Link>
                   </dd>
                 </div>
@@ -215,10 +222,10 @@ export default function DettaglioBottigliaPage({
           </div>
 
           {/* Visualizzazione Cantina */}
-          {bottle.location &&
-            bottle.location.nr_file &&
-            bottle.location.bottiglie_fila_dispari &&
-            bottle.location.bottiglie_fila_pari &&
+          {location &&
+            location.nr_file &&
+            location.bottiglie_fila_dispari &&
+            location.bottiglie_fila_pari &&
             bottle.posizioni_cantina &&
             Array.isArray(bottle.posizioni_cantina) &&
             bottle.posizioni_cantina.length > 0 && (
@@ -227,9 +234,9 @@ export default function DettaglioBottigliaPage({
                   Posizioni in Cantina
                 </h2>
                 <CellarPositionDisplay
-                  nr_file={bottle.location.nr_file}
-                  bottiglie_fila_dispari={bottle.location.bottiglie_fila_dispari}
-                  bottiglie_fila_pari={bottle.location.bottiglie_fila_pari}
+                  nr_file={location.nr_file}
+                  bottiglie_fila_dispari={location.bottiglie_fila_dispari}
+                  bottiglie_fila_pari={location.bottiglie_fila_pari}
                   positions={bottle.posizioni_cantina as unknown as CellarPosition[]}
                 />
               </div>
@@ -306,7 +313,7 @@ export default function DettaglioBottigliaPage({
               href={`/vini/${bottle.wine_id}`}
               className="inline-flex items-center text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300"
             >
-              <span>Vedi dettaglio vino "{bottle.wine.nome}"</span>
+              <span>Vedi dettaglio vino "{wine?.nome || 'Vino'}"</span>
               <span className="ml-2">→</span>
             </Link>
           </div>
@@ -336,7 +343,7 @@ export default function DettaglioBottigliaPage({
             </h3>
             <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               Sei sicuro di voler eliminare questa bottiglia di "
-              {bottle.wine.nome}"? Questa azione non può essere annullata.
+              {wine?.nome || 'Vino'}"? Questa azione non può essere annullata.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -358,15 +365,15 @@ export default function DettaglioBottigliaPage({
       )}
 
       {/* Modal zoom interattivo */}
-      {showImageZoom && (zoomImageType === 'front' ? bottle.foto_etichetta_url : bottle.foto_retro_url) && (
+      {showImageZoom && (zoomImageType === 'front' ? labelFrontUrl : labelBackUrl) && (
         <div className="fixed inset-0 z-50 bg-black">
           {/* Header con controlli */}
           <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black to-transparent p-4">
             <div className="text-white">
-              <h3 className="text-lg font-semibold">{bottle.wine.nome}</h3>
+              <h3 className="text-lg font-semibold">{wine?.nome || 'Vino'}</h3>
               <p className="text-sm text-gray-300">
-                {bottle.wine.produttore}
-                {bottle.wine.annata && ` • ${bottle.wine.annata}`}
+                {wine?.produttore}
+                {wine?.annata && ` • ${wine.annata}`}
                 {' • '}
                 <span className="font-semibold">
                   {zoomImageType === 'front' ? 'Fronte' : 'Retro'}
@@ -375,7 +382,7 @@ export default function DettaglioBottigliaPage({
             </div>
             <div className="flex gap-2">
               {/* Pulsanti per cambiare vista */}
-              {bottle.foto_etichetta_url && bottle.foto_retro_url && (
+              {labelFrontUrl && labelBackUrl && (
                 <div className="flex gap-1 rounded-full bg-white bg-opacity-20 p-1">
                   <button
                     onClick={() => setZoomImageType('front')}
@@ -457,8 +464,8 @@ export default function DettaglioBottigliaPage({
                   contentClass="flex items-center justify-center"
                 >
                   <Image
-                    src={(zoomImageType === 'front' ? bottle.foto_etichetta_url : bottle.foto_retro_url)!}
-                    alt={`Etichetta ${zoomImageType === 'front' ? 'Fronte' : 'Retro'} ${bottle.wine.nome} - Zoom`}
+                    src={(zoomImageType === 'front' ? labelFrontUrl : labelBackUrl)!}
+                    alt={`Etichetta ${zoomImageType === 'front' ? 'Fronte' : 'Retro'} ${wine?.nome || 'Vino'} - Zoom`}
                     width={1200}
                     height={1600}
                     className="max-h-screen max-w-full object-contain"

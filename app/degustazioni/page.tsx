@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTastings } from "@/lib/hooks/use-tastings";
+import { useWines } from "@/lib/hooks/use-wines";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Calendar, Users, UtensilsCrossed, PartyPopper, Search, LayoutGrid, List } from "lucide-react";
@@ -9,17 +10,24 @@ import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function DegustazioniPage() {
   const { data: tastings, isLoading } = useTastings();
+  const { data: wines } = useWines();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterAnno, setFilterAnno] = useState<string>("");
   const [filterPunteggioMin, setFilterPunteggioMin] = useState<string>("");
   const [viewMode, setViewMode] = useState<"card" | "list">("card");
 
+  // Create a map of wine ID to wine for fast lookup
+  const winesMap = useMemo(() => {
+    return new Map(wines?.map(wine => [wine.id, wine]) || []);
+  }, [wines]);
+
   // Filtra degustazioni localmente
   const filteredTastings = tastings?.filter((tasting) => {
+    const wine = winesMap.get(tasting.wine_id);
     const matchSearch =
       !searchQuery ||
-      tasting.wine.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tasting.wine.produttore?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      wine?.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      wine?.produttore?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tasting.occasione?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       tasting.abbinamento_cibo?.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -218,7 +226,9 @@ export default function DegustazioniPage() {
         {filteredTastings && filteredTastings.length > 0 ? (
           viewMode === "card" ? (
             <div className="space-y-4">
-              {filteredTastings.map((tasting) => (
+              {filteredTastings.map((tasting) => {
+                const wine = winesMap.get(tasting.wine_id);
+                return (
                 <Link
                   key={tasting.id}
                   href={`/degustazioni/${tasting.id}`}
@@ -229,7 +239,7 @@ export default function DegustazioniPage() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
                           <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 hover:text-wine-600 dark:hover:text-wine-400">
-                            {tasting.wine.nome}
+                            {wine?.nome || 'Vino'}
                           </h3>
                           {tasting.punteggio && (
                             <span className="inline-flex items-center rounded-full bg-wine-100 dark:bg-wine-900/50 px-3 py-1 text-sm font-medium text-wine-800 dark:text-wine-200">
@@ -238,8 +248,8 @@ export default function DegustazioniPage() {
                           )}
                         </div>
                       <p className="text-sm text-gray-600 dark:text-slate-400">
-                        {tasting.wine.produttore}
-                        {tasting.wine.annata && ` - ${tasting.wine.annata}`}
+                        {wine?.produttore}
+                        {wine?.annata && ` - ${wine.annata}`}
                       </p>
                       <div className="mt-3 flex flex-wrap gap-4 text-sm text-gray-500 dark:text-slate-400">
                         <span className="flex items-center gap-1.5">
@@ -282,7 +292,8 @@ export default function DegustazioniPage() {
                   )}
                 </div>
               </Link>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="overflow-hidden rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 shadow dark:shadow-slate-900/50">
@@ -322,7 +333,9 @@ export default function DegustazioniPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-800">
-                  {filteredTastings.map((tasting) => (
+                  {filteredTastings.map((tasting) => {
+                    const wine = winesMap.get(tasting.wine_id);
+                    return (
                     <tr
                       key={tasting.id}
                       className="hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
@@ -333,11 +346,11 @@ export default function DegustazioniPage() {
                           className="group"
                         >
                           <div className="font-medium text-gray-900 dark:text-slate-100 group-hover:text-wine-600 dark:group-hover:text-wine-400 transition-colors">
-                            {tasting.wine.nome}
+                            {wine?.nome || 'Vino'}
                           </div>
                           <div className="text-sm text-gray-500 dark:text-slate-400">
-                            {tasting.wine.produttore}
-                            {tasting.wine.annata && ` - ${tasting.wine.annata}`}
+                            {wine?.produttore}
+                            {wine?.annata && ` - ${wine.annata}`}
                           </div>
                         </Link>
                       </td>
@@ -368,7 +381,8 @@ export default function DegustazioniPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

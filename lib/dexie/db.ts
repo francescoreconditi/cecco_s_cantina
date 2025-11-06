@@ -54,6 +54,7 @@ export interface LocalTasting {
   occasione?: string;
   abbinamentoCibo?: string;
   partecipanti: string[];
+  fotoDegustazioneUrl?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -85,6 +86,24 @@ export interface OutboxEntry {
   retryCount: number;
 }
 
+// Photo outbox per upload foto offline
+export interface PhotoOutbox {
+  seq?: number; // auto-incrementale
+  id: string; // ID univoco
+  fileBlob: Blob; // Contenuto file
+  fileName: string;
+  fileType: string; // MIME type
+  userId: string;
+  bucket: "tasting-photos" | "labels"; // Bucket Supabase
+  entityType: "tasting" | "bottle"; // Tipo entità associata
+  entityId: string; // ID entità (può essere temp-xxx)
+  timestamp: string;
+  status: "pending" | "uploading" | "uploaded" | "error";
+  error?: string;
+  retryCount: number;
+  uploadedPath?: string; // Path finale dopo upload
+}
+
 // Definizione database Dexie
 class CantinaDatabase extends Dexie {
   wines!: EntityTable<LocalWine, "id">;
@@ -92,6 +111,7 @@ class CantinaDatabase extends Dexie {
   tastings!: EntityTable<LocalTasting, "id">;
   locations!: EntityTable<LocalLocation, "id">;
   outbox!: EntityTable<OutboxEntry, "seq">;
+  photoOutbox!: EntityTable<PhotoOutbox, "seq">;
 
   constructor() {
     super("cantina-vini");
@@ -103,6 +123,7 @@ class CantinaDatabase extends Dexie {
       tastings: "id, ownerId, wineId, data, updatedAt",
       locations: "id, ownerId, parentId, updatedAt",
       outbox: "++seq, id, type, table, timestamp, status",
+      photoOutbox: "++seq, id, entityType, entityId, timestamp, status",
     });
   }
 }
@@ -133,4 +154,35 @@ export async function addToOutbox(
 // Helper per pulire l'outbox (voci sincronizzate)
 export async function cleanOutbox() {
   await db.outbox.where("status").equals("synced").delete();
+}
+
+// Helper per aggiungere foto alla photo outbox
+export async function addPhotoToOutbox(
+  file: File,
+  userId: string,
+  bucket: PhotoOutbox["bucket"],
+  entityType: PhotoOutbox["entityType"],
+  entityId: string
+) {
+  const entry: PhotoOutbox = {
+    id: crypto.randomUUID(),
+    fileBlob: new Blob([await file.arrayBuffer()], { type: file.type }),
+    fileName: file.name,
+    fileType: file.type,
+    userId,
+    bucket,
+    entityType,
+    entityId,
+    timestamp: new Date().toISOString(),
+    status: "pending",
+    retryCount: 0,
+  };
+
+  await db.photoOutbox.add(entry);
+  return entry;
+}
+
+// Helper per pulire photo outbox (foto sincronizzate)
+export async function cleanPhotoOutbox() {
+  await db.photoOutbox.where("status").equals("uploaded").delete();
 }

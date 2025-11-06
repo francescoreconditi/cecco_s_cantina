@@ -22,7 +22,9 @@
       "Bash(nul)",
       "Bash(findstr:*)",
       "Bash(where:*)",
-      "Bash(npx next lint:*)"
+      "Bash(npx next lint:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []

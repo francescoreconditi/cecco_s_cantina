@@ -20,6 +20,7 @@ import { CellarPositionSelector } from "@/components/ubicazioni/cellar-position-
 import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 import type { Json } from "@/lib/types/database";
 import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
+import { usePhotoUrl } from "@/lib/hooks/use-photo-url";
 
 export default function ModificaBottigliaPage({
   params,
@@ -34,6 +35,10 @@ export default function ModificaBottigliaPage({
   const deleteLabel = useDeleteLabel();
   const { data: wines } = useWines();
   const { data: locations } = useLocations();
+
+  // Risolvi blob URLs per le foto
+  const labelFrontUrl = usePhotoUrl(bottle?.foto_etichetta_url, "bottle", id);
+  const labelBackUrl = usePhotoUrl(bottle?.foto_retro_url, "bottle", id);
 
   const [formData, setFormData] = useState({
     wine_id: "",
@@ -245,7 +250,9 @@ export default function ModificaBottigliaPage({
           <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">
             Modifica Bottiglia
           </h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">{bottle.wine.nome}</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-slate-400">
+            {wines?.find((w) => w.id === bottle.wine_id)?.nome || "Vino"}
+          </p>
         </div>
       </div>
 
@@ -312,10 +319,10 @@ export default function ModificaBottigliaPage({
                         alt="Preview Fronte"
                         className="h-48 w-auto rounded-md border border-gray-200 dark:border-slate-600"
                       />
-                    ) : currentPhotoFrontUrl ? (
+                    ) : currentPhotoFrontUrl && labelFrontUrl ? (
                       <div className="relative h-48 w-48">
                         <Image
-                          src={currentPhotoFrontUrl}
+                          src={labelFrontUrl}
                           alt="Etichetta Fronte"
                           fill
                           className="rounded-md object-cover border border-gray-200 dark:border-slate-600"
@@ -359,10 +366,10 @@ export default function ModificaBottigliaPage({
                         alt="Preview Retro"
                         className="h-48 w-auto rounded-md border border-gray-200 dark:border-slate-600"
                       />
-                    ) : currentPhotoBackUrl ? (
+                    ) : currentPhotoBackUrl && labelBackUrl ? (
                       <div className="relative h-48 w-48">
                         <Image
-                          src={currentPhotoBackUrl}
+                          src={labelBackUrl}
                           alt="Etichetta Retro"
                           fill
                           className="rounded-md object-cover border border-gray-200 dark:border-slate-600"

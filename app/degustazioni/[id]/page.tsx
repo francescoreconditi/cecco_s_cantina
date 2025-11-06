@@ -3,6 +3,8 @@
 import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTasting, useDeleteTasting } from "@/lib/hooks/use-tastings";
+import { useWine } from "@/lib/hooks/use-wines";
+import { usePhotoUrl } from "@/lib/hooks/use-photo-url";
 import Link from "next/link";
 import Image from "next/image";
 import { Header } from "@/components/layout/header";
@@ -18,6 +20,8 @@ export default function DettaglioDegustazionePage({
   const router = useRouter();
   const { id } = use(params);
   const { data: tasting, isLoading, error } = useTasting(id);
+  const { data: wine } = useWine(tasting?.wine_id || "");
+  const photoUrl = usePhotoUrl(tasting?.foto_degustazione_url, "tasting", id);
   const deleteTasting = useDeleteTasting();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -98,11 +102,11 @@ export default function DettaglioDegustazionePage({
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-100">
-                {tasting.wine.nome}
+                {wine?.nome || "Vino"}
               </h1>
               <p className="mt-2 text-xl text-gray-600 dark:text-slate-400">
-                {tasting.wine.produttore}
-                {tasting.wine.annata && ` - ${tasting.wine.annata}`}
+                {wine?.produttore}
+                {wine?.annata && ` - ${wine.annata}`}
               </p>
             </div>
             {tasting.punteggio && (
@@ -117,14 +121,14 @@ export default function DettaglioDegustazionePage({
         </div>
 
         {/* Foto Degustazione */}
-        {tasting.foto_degustazione_url && (
+        {photoUrl && (
           <div className="mb-8 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
             <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
               Foto Degustazione
             </h2>
             <div className="relative h-96 w-full overflow-hidden rounded-lg">
               <Image
-                src={tasting.foto_degustazione_url}
+                src={photoUrl}
                 alt="Foto degustazione"
                 fill
                 className="object-contain"
@@ -239,7 +243,7 @@ export default function DettaglioDegustazionePage({
               href={`/vini/${tasting.wine_id}`}
               className="inline-flex items-center text-wine-600 dark:text-wine-400 hover:text-wine-700 dark:hover:text-wine-300"
             >
-              <span>Vedi scheda completa "{tasting.wine.nome}"</span>
+              <span>Vedi scheda completa "{wine?.nome || 'Vino'}"</span>
               <span className="ml-2">→</span>
             </Link>
           </div>
@@ -269,7 +273,7 @@ export default function DettaglioDegustazionePage({
             </h3>
             <p className="mt-2 text-sm text-gray-600 dark:text-slate-400">
               Sei sicuro di voler eliminare questa degustazione di "
-              {tasting.wine.nome}"? Questa azione non può essere annullata.
+              {wine?.nome || 'Vino'}"? Questa azione non può essere annullata.
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
