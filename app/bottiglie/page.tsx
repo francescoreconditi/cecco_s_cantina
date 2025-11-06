@@ -10,6 +10,7 @@ import { Barcode, Search, LayoutGrid, List } from "lucide-react";
 import { ExportMenu, ExportIcons } from "@/components/export/export-menu";
 import { exportInventoryExcel, exportInventoryCSV } from "@/lib/export/excel-inventory";
 import { generateBottleLabels } from "@/lib/export/qr-labels";
+import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function BottigliePage() {
   const { data: bottles, isLoading } = useBottles();
@@ -40,14 +41,7 @@ export default function BottigliePage() {
   ).sort();
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
-          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
-        </div>
-      </div>
-    );
+    return <WineGlassLoader message="Caricamento bottiglie..." />;
   }
 
   return (

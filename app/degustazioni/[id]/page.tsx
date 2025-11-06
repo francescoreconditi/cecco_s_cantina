@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Calendar, Users, UtensilsCrossed, PartyPopper, Wine } from "lucide-react";
+import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function DettaglioDegustazionePage({
   params,
@@ -29,14 +30,7 @@ export default function DettaglioDegustazionePage({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
-          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
-        </div>
-      </div>
-    );
+    return <WineGlassLoader message="Caricamento degustazione..." />;
   }
 
   if (error || !tasting) {

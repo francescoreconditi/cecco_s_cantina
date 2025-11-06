@@ -21,6 +21,7 @@ import {
   AlertCircle,
   ChevronRight,
 } from "lucide-react";
+import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function DettaglioUbicazionePage({
   params,
@@ -58,14 +59,7 @@ export default function DettaglioUbicazionePage({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
-          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
-        </div>
-      </div>
-    );
+    return <WineGlassLoader message="Caricamento ubicazione..." />;
   }
 
   if (error || !location) {

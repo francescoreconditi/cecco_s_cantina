@@ -19,6 +19,7 @@ import { ScanLine, AlertCircle } from "lucide-react";
 import { CellarPositionSelector } from "@/components/ubicazioni/cellar-position-selector";
 import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 import type { Json } from "@/lib/types/database";
+import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function ModificaBottigliaPage({
   params,
@@ -216,14 +217,7 @@ export default function ModificaBottigliaPage({
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
-          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
-        </div>
-      </div>
-    );
+    return <WineGlassLoader message="Caricamento dati bottiglia..." />;
   }
 
   if (!bottle) {

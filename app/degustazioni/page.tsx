@@ -5,6 +5,7 @@ import { useTastings } from "@/lib/hooks/use-tastings";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Calendar, Users, UtensilsCrossed, PartyPopper, Search, LayoutGrid, List } from "lucide-react";
+import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function DegustazioniPage() {
   const { data: tastings, isLoading } = useTastings();
@@ -41,14 +42,7 @@ export default function DegustazioniPage() {
   ).sort((a, b) => b.localeCompare(a)); // Ordine decrescente
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-slate-950">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-wine-200 dark:border-wine-800 border-t-wine-600 dark:border-t-wine-500"></div>
-          <p className="text-gray-600 dark:text-slate-400">Caricamento...</p>
-        </div>
-      </div>
-    );
+    return <WineGlassLoader message="Caricamento degustazioni..." />;
   }
 
   return (

@@ -21,7 +21,8 @@
       "Bash(ping:*)",
       "Bash(nul)",
       "Bash(findstr:*)",
-      "Bash(where:*)"
+      "Bash(where:*)",
+      "Bash(npx next lint:*)"
     ],
     "deny": [],
     "ask": []
