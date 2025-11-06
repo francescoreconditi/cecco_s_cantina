@@ -1,19 +1,32 @@
 // Componente per visualizzare le posizioni occupate nella cantina (sola lettura)
 import { CellarPosition } from "./cellar-position-selector";
+import type { BottleWithWine } from "@/lib/api/bottles";
 
 interface CellarPositionDisplayProps {
   nr_file: number;
   bottiglie_fila_dispari: number;
   bottiglie_fila_pari: number;
-  positions: CellarPosition[];
+  bottles?: BottleWithWine[];
+  positions?: CellarPosition[]; // Mantenuto per retrocompatibilità
 }
 
 export function CellarPositionDisplay({
   nr_file,
   bottiglie_fila_dispari,
   bottiglie_fila_pari,
-  positions,
+  bottles = [],
+  positions: positionsProps = [],
 }: CellarPositionDisplayProps) {
+  // Estrai tutte le posizioni occupate dalle bottiglie o usa quelle passate direttamente
+  const positions: CellarPosition[] = bottles.length > 0
+    ? bottles.flatMap((bottle) => {
+        if (bottle.posizioni_cantina && Array.isArray(bottle.posizioni_cantina)) {
+          return bottle.posizioni_cantina as unknown as CellarPosition[];
+        }
+        return [];
+      })
+    : positionsProps;
+
   // Calcola il totale delle bottiglie
   const nr_file_dispari = Math.ceil(nr_file / 2);
   const nr_file_pari = Math.floor(nr_file / 2);
@@ -24,6 +37,17 @@ export function CellarPositionDisplay({
 
   const isPositionOccupied = (riga: number, colonna: number) => {
     return positions.some((p) => p.riga === riga && p.colonna === colonna);
+  };
+
+  // Trova la bottiglia che occupa una specifica posizione
+  const getBottleAtPosition = (riga: number, colonna: number): BottleWithWine | undefined => {
+    return bottles.find((bottle) => {
+      if (bottle.posizioni_cantina && Array.isArray(bottle.posizioni_cantina)) {
+        const bottlePositions = bottle.posizioni_cantina as unknown as CellarPosition[];
+        return bottlePositions.some((p) => p.riga === riga && p.colonna === colonna);
+      }
+      return false;
+    });
   };
 
   return (
@@ -68,17 +92,27 @@ export function CellarPositionDisplay({
                     {Array.from({ length: bottiglie }, (_, bottleIndex) => {
                       const colonnaNumber = bottleIndex + 1;
                       const isOccupied = isPositionOccupied(filaNumber, colonnaNumber);
+                      const bottle = getBottleAtPosition(filaNumber, colonnaNumber);
+
+                      // Crea tooltip con informazioni bottiglia
+                      let tooltipText = `Fila ${filaNumber} - Posizione ${colonnaNumber}`;
+                      if (isOccupied && bottle) {
+                        const produttore = bottle.wine.produttore || "N/D";
+                        const nome = bottle.wine.nome || "N/D";
+                        const annata = bottle.wine.annata || "";
+                        tooltipText = `${produttore} - ${nome}${annata ? ` (${annata})` : ""}\nFila ${filaNumber}, Pos. ${colonnaNumber}`;
+                      }
 
                       return (
                         <div
                           key={bottleIndex}
                           className="flex items-center justify-center"
-                          title={`Fila ${filaNumber} - Posizione ${colonnaNumber}${isOccupied ? " (occupata)" : ""}`}
+                          title={tooltipText}
                         >
                           <div
-                            className={`h-8 w-8 rounded-full border-2 ${
+                            className={`h-8 w-8 rounded-full border-2 transition-transform hover:scale-110 ${
                               isOccupied
-                                ? "border-wine-600 dark:border-wine-500 bg-wine-200 dark:bg-wine-800"
+                                ? "border-wine-600 dark:border-wine-500 bg-wine-200 dark:bg-wine-800 cursor-pointer"
                                 : "border-green-500 dark:border-green-400 bg-green-100 dark:bg-green-900/50"
                             }`}
                           />

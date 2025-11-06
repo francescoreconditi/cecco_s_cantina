@@ -1,6 +1,14 @@
 // Hooks per degustazioni
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getTastings, getTasting, createTasting, updateTasting, deleteTasting } from "@/lib/api/tastings";
+import {
+  getTastings,
+  getTasting,
+  createTasting,
+  updateTasting,
+  deleteTasting,
+  uploadTastingPhoto,
+  deleteTastingPhoto,
+} from "@/lib/api/tastings";
 import type { Database } from "@/lib/types/database";
 
 type TastingInsert = Database["public"]["Tables"]["tastings"]["Insert"];
@@ -44,5 +52,18 @@ export function useDeleteTasting() {
   return useMutation({
     mutationFn: (id: string) => deleteTasting(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tastings"] }),
+  });
+}
+
+export function useUploadTastingPhoto() {
+  return useMutation({
+    mutationFn: ({ file, userId }: { file: File; userId: string }) =>
+      uploadTastingPhoto(file, userId),
+  });
+}
+
+export function useDeleteTastingPhoto() {
+  return useMutation({
+    mutationFn: (photoUrl: string) => deleteTastingPhoto(photoUrl),
   });
 }

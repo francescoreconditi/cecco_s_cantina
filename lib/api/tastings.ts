@@ -83,3 +83,79 @@ export async function deleteTasting(id: string) {
   const { error } = await supabase.from("tastings").delete().eq("id", id);
   if (error) throw error;
 }
+
+// Upload foto degustazione
+export async function uploadTastingPhoto(file: File, userId: string) {
+  const supabase = createClient();
+
+  // Genera nome file univoco
+  const fileExt = file.name.split(".").pop();
+  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const filePath = `user/${userId}/${fileName}`;
+
+  const { data, error } = await supabase.storage
+    .from("tasting-photos")
+    .upload(filePath, file, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (error) throw error;
+
+  // Restituisci il PATH (non l'URL) - lo convertiremo in signed URL quando serve
+  return filePath;
+}
+
+// Genera signed URL temporaneo per visualizzare foto (valido 1 ora)
+export async function getTastingPhotoSignedUrl(pathOrUrl: string) {
+  const supabase = createClient();
+
+  let filePath: string;
+
+  // Se è un URL completo, estrai solo il path
+  if (pathOrUrl.startsWith("http")) {
+    try {
+      const urlObj = new URL(pathOrUrl);
+      const pathParts = urlObj.pathname.split("/");
+      filePath = pathParts.slice(pathParts.indexOf("tasting-photos") + 1).join("/");
+    } catch (e) {
+      console.error("Errore parsing URL foto degustazione:", e);
+      return null;
+    }
+  } else {
+    // Altrimenti è già un path relativo
+    filePath = pathOrUrl;
+  }
+
+  const { data, error } = await supabase.storage
+    .from("tasting-photos")
+    .createSignedUrl(filePath, 3600); // 1 ora
+
+  if (error) {
+    console.error("Errore generazione signed URL:", error);
+    return null;
+  }
+
+  return data.signedUrl;
+}
+
+// Elimina foto degustazione
+export async function deleteTastingPhoto(pathOrUrl: string) {
+  const supabase = createClient();
+
+  let filePath: string;
+
+  // Se è un URL, estrai il path
+  if (pathOrUrl.startsWith("http")) {
+    const urlObj = new URL(pathOrUrl);
+    const pathParts = urlObj.pathname.split("/");
+    filePath = pathParts.slice(pathParts.indexOf("tasting-photos") + 1).join("/");
+  } else {
+    // Altrimenti è già un path
+    filePath = pathOrUrl;
+  }
+
+  const { error } = await supabase.storage.from("tasting-photos").remove([filePath]);
+
+  if (error) throw error;
+}

@@ -28,7 +28,7 @@
 **Cantina Vini** è un'applicazione moderna e completa per gestire la propria collezione di vini. Pensata sia per appassionati che per professionisti del settore, offre un sistema completo di catalogazione, inventario, degustazione e analisi.
 
 ### Versione Attuale
-**v0.1.0** - MVP in sviluppo attivo
+**v0.1.1** - MVP in sviluppo attivo (Aggiornato: 06 Gennaio 2025)
 
 ### Caratteristiche Uniche
 - **Progressive Web App (PWA)**: Installabile su dispositivi mobile e desktop
@@ -46,10 +46,13 @@
 - Import automatico dati da Vivino API
 - Upload foto etichette con zoom interattivo
 - Gestione vitigni multipli
+- Loader animato tematico (bicchiere che si riempe)
 
 ### Inventario Bottiglie
 - Tracciamento quantità disponibili
 - Gestione ubicazioni gerarchiche (cantina → scaffale → ripiano)
+- Visualizzazione posizioni in cantina con tooltip informativi
+- Tooltip intelligenti: mostra produttore, vino e annata su hover
 - Storico acquisti con prezzi e fornitori
 - Calcolo finestra di maturazione (pronto da/meglio entro)
 - Scanner barcode integrato per identificazione rapida
@@ -631,11 +634,15 @@ Queue Operation (Dexie)
 - [x] Design responsive mobile-first
 - [x] Tema personalizzato "wine"
 - [x] Toast notifications (Sonner)
+- [x] **WineGlassLoader**: Animazione tematica bicchiere che si riempe
+- [x] **Tooltip Informativi**: Info bottiglia su hover nelle posizioni cantina
+- [x] Animazioni CSS personalizzate (fillWine, sway, shimmer)
 - [x] Loading states e skeleton screens
 - [x] Error boundaries
 - [x] Breadcrumb navigation
 - [x] Confirm dialogs per eliminazioni
 - [x] Image zoom su hover
+- [x] Supporto Dark Mode completo
 
 ## 🗺️ Roadmap
 
@@ -799,6 +806,29 @@ Sviluppato con ❤️ e 🍷 da [Il Tuo Nome]
 
 ---
 
-**Versione**: 0.1.0
-**Ultimo aggiornamento**: 2025-01-04
+**Versione**: 0.1.1
+**Ultimo aggiornamento**: 2025-01-06
 **Status**: 🟢 In sviluppo attivo
+
+## 🎨 Novità Recenti (v0.1.1)
+
+### WineGlassLoader - Animazione Tematica
+Sostituito lo spinner generico con un'elegante animazione SVG di un bicchiere di vino che si riempe progressivamente. Include tre animazioni CSS personalizzate:
+- **fillWine**: Vino che sale dal basso (2s loop)
+- **sway**: Movimento oscillante del bicchiere (3s loop)
+- **shimmer**: Effetto brillantezza (2s loop)
+
+Implementato in tutte le 11 pagine dell'applicazione con messaggi contestuali.
+
+### Tooltip Informazioni Bottiglia
+Aggiunto tooltip interattivo nella visualizzazione cantina che mostra:
+- Produttore
+- Nome vino
+- Annata
+- Posizione esatta (Fila X, Pos. Y)
+
+Funziona su hover desktop e tap-and-hold mobile, completamente accessibile.
+
+---
+
+Per dettagli tecnici completi delle implementazioni, consulta [implementazioni.md](./implementazioni.md).

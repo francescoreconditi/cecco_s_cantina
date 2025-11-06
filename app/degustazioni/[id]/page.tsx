@@ -4,6 +4,7 @@ import { use, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTasting, useDeleteTasting } from "@/lib/hooks/use-tastings";
 import Link from "next/link";
+import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { Calendar, Users, UtensilsCrossed, PartyPopper, Wine } from "lucide-react";
@@ -114,6 +115,23 @@ export default function DettaglioDegustazionePage({
             )}
           </div>
         </div>
+
+        {/* Foto Degustazione */}
+        {tasting.foto_degustazione_url && (
+          <div className="mb-8 rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
+              Foto Degustazione
+            </h2>
+            <div className="relative h-96 w-full overflow-hidden rounded-lg">
+              <Image
+                src={tasting.foto_degustazione_url}
+                alt="Foto degustazione"
+                fill
+                className="object-contain"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Griglia informazioni */}
         <div className="space-y-6">

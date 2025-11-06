@@ -2,7 +2,7 @@
 
 ## 📊 STATO ATTUALE DEL PROGETTO
 
-### ✅ Funzionalità Complete (75% del progetto)
+### ✅ Funzionalità Complete (78% del progetto)
 
 **CRUD Completo per tutte le entità:**
 - **Vini**: Lista con filtri (ricerca, regione, tipologia), creazione, dettaglio, modifica inline, eliminazione
@@ -19,6 +19,8 @@
 - ✅ TypeScript su tutto il progetto
 - ✅ PWA configurato con next-pwa
 - ✅ TailwindCSS con tema personalizzato wine colors
+- ✅ Animazioni custom CSS per loader tematici
+- ✅ Tooltip interattivi con informazioni contestuali
 
 **Librerie Installate:**
 - `@tanstack/react-query` - State management (✅ USATO)
@@ -28,6 +30,146 @@
 - `@zxing/library` - Barcode scanner (✅ USATO)
 - `lucide-react` - Icone (✅ USATO)
 - `next-pwa` - PWA support (⚠️ PARZIALMENTE USATO)
+
+---
+
+## 🎨 IMPLEMENTAZIONI RECENTI (Gennaio 2025)
+
+### ✅ WineGlassLoader - Animazione di Caricamento Tematica
+
+**Data implementazione:** 06 Gennaio 2025
+
+**Descrizione:**
+Sostituito lo spinner generico di caricamento con un'elegante animazione SVG di un bicchiere di vino che si riempe progressivamente.
+
+**File creati/modificati:**
+- ✅ `components/ui/wine-glass-loader.tsx` - Componente loader con animazione SVG
+- ✅ `app/globals.css` - Aggiunte animazioni CSS personalizzate
+- ✅ 11 pagine aggiornate per utilizzare il nuovo loader
+
+**Animazioni implementate:**
+1. **fillWine**: Vino che sale dal basso verso l'alto (2s loop)
+2. **sway**: Leggero movimento oscillante del bicchiere (3s loop)
+3. **shimmer**: Effetto brillantezza sul liquido (2s loop)
+
+**Pagine con nuovo loader:**
+- `app/vini/page.tsx` - "Caricamento vini..."
+- `app/vini/[id]/page.tsx` - "Caricamento vino..."
+- `app/bottiglie/page.tsx` - "Caricamento bottiglie..."
+- `app/bottiglie/[id]/page.tsx` - "Caricamento bottiglia..."
+- `app/bottiglie/[id]/modifica/page.tsx` - "Caricamento dati bottiglia..."
+- `app/ubicazioni/page.tsx` - "Caricamento ubicazioni..."
+- `app/ubicazioni/[id]/page.tsx` - "Caricamento ubicazione..."
+- `app/ubicazioni/[id]/modifica/page.tsx` - "Caricamento dati ubicazione..."
+- `app/degustazioni/page.tsx` - "Caricamento degustazioni..."
+- `app/degustazioni/[id]/page.tsx` - "Caricamento degustazione..."
+- `app/degustazioni/[id]/modifica/page.tsx` - "Caricamento dati degustazione..."
+
+**Features:**
+- SVG animato con gradiente personalizzato colore vino
+- Responsive e funziona su tutti i dispositivi
+- Supporto Dark Mode completo
+- Messaggi personalizzabili per ogni contesto
+- Testo secondario "Un momento di pazienza..." per UX migliorata
+
+**Impatto UX:**
+- ⭐ Caricamento più piacevole e tematico
+- ⭐ Branding coerente su tutta l'applicazione
+- ⭐ Feedback visivo più ingaggiante
+
+---
+
+### ✅ Tooltip Informazioni Bottiglia nelle Posizioni Cantina
+
+**Data implementazione:** 06 Gennaio 2025
+
+**Descrizione:**
+Aggiunto tooltip interattivo che mostra i dettagli della bottiglia quando si passa il mouse su una posizione occupata nella visualizzazione della cantina.
+
+**File modificati:**
+- ✅ `lib/api/bottles.ts` - Modificato `getBottlesByLocation()` per includere join con `wines`
+- ✅ `components/ubicazioni/cellar-position-display.tsx` - Aggiunto supporto tooltip con dati bottiglia
+- ✅ `app/ubicazioni/[id]/page.tsx` - Passaggio dati completi bottiglia al componente
+
+**Implementazione tecnica:**
+
+**1. API Enhancement:**
+```typescript
+// Prima: SELECT solo da bottles
+.select("*")
+
+// Dopo: SELECT con JOIN wines
+.select(`
+  *,
+  wine:wines(*)
+`)
+// Ritorna: BottleWithWine[] invece di Bottle[]
+```
+
+**2. Componente Display:**
+```typescript
+interface CellarPositionDisplayProps {
+  nr_file: number;
+  bottiglie_fila_dispari: number;
+  bottiglie_fila_pari: number;
+  bottles?: BottleWithWine[];      // NUOVO
+  positions?: CellarPosition[];     // Retrocompatibile
+}
+```
+
+**3. Funzione Lookup Bottiglia:**
+```typescript
+const getBottleAtPosition = (
+  riga: number,
+  colonna: number
+): BottleWithWine | undefined => {
+  return bottles.find((bottle) => {
+    const bottlePositions = bottle.posizioni_cantina as CellarPosition[];
+    return bottlePositions.some(
+      (p) => p.riga === riga && p.colonna === colonna
+    );
+  });
+};
+```
+
+**4. Tooltip Dinamico:**
+```typescript
+let tooltipText = `Fila ${filaNumber} - Posizione ${colonnaNumber}`;
+
+if (isOccupied && bottle) {
+  const produttore = bottle.wine.produttore || "N/D";
+  const nome = bottle.wine.nome || "N/D";
+  const annata = bottle.wine.annata || "";
+
+  tooltipText = `${produttore} - ${nome}${annata ? ` (${annata})` : ""}\n` +
+                `Fila ${filaNumber}, Pos. ${colonnaNumber}`;
+}
+```
+
+**Esempio tooltip:**
+```
+Antinori - Tignanello (2018)
+Fila 1, Pos. 1
+```
+
+**Features:**
+- ✅ Tooltip nativo browser (attributo `title`) - no JavaScript richiesto
+- ✅ Mostra: Produttore - Nome Vino (Annata)
+- ✅ Include posizione esatta: Fila X, Pos. Y
+- ✅ Effetto hover con `scale-110` per feedback visivo
+- ✅ Cursor pointer su posizioni occupate
+- ✅ Retrocompatibile con implementazione precedente
+
+**Impatto UX:**
+- ⭐ Identificazione immediata bottiglia senza click
+- ⭐ Navigazione più rapida nella cantina
+- ⭐ Meno click necessari per ottenere informazioni
+- ⭐ UX professionale e intuitiva
+
+**Accessibilità:**
+- Tooltip supportato da screen readers
+- Funziona anche su dispositivi touch (tap and hold)
+- Non richiede JavaScript per funzionare
 
 ---
 

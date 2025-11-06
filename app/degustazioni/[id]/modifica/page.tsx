@@ -2,11 +2,13 @@
 
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTasting, useUpdateTasting } from "@/lib/hooks/use-tastings";
+import { useTasting, useUpdateTasting, useUploadTastingPhoto, useDeleteTastingPhoto } from "@/lib/hooks/use-tastings";
 import { useWines } from "@/lib/hooks/use-wines";
+import { createClient } from "@/lib/supabase/client";
 import { Header } from "@/components/layout/header";
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import Image from "next/image";
+import { AlertCircle, Upload, X } from "lucide-react";
 import { WineGlassLoader } from "@/components/ui/wine-glass-loader";
 
 export default function ModificaDegustazionePage({
@@ -18,6 +20,8 @@ export default function ModificaDegustazionePage({
   const { id } = use(params);
   const { data: tasting, isLoading } = useTasting(id);
   const updateTasting = useUpdateTasting();
+  const uploadPhoto = useUploadTastingPhoto();
+  const deletePhoto = useDeleteTastingPhoto();
   const { data: wines } = useWines();
 
   const [formData, setFormData] = useState({
@@ -33,6 +37,10 @@ export default function ModificaDegustazionePage({
     partecipanti: "",
   });
 
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [existingPhotoUrl, setExistingPhotoUrl] = useState<string | null>(null);
+  const [photoToDelete, setPhotoToDelete] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Popola form quando i dati vengono caricati
@@ -57,15 +65,67 @@ export default function ModificaDegustazionePage({
         abbinamento_cibo: tasting.abbinamento_cibo || "",
         partecipanti: tasting.partecipanti?.join(", ") || "",
       });
+
+      // Carica foto esistente
+      if (tasting.foto_degustazione_url) {
+        setExistingPhotoUrl(tasting.foto_degustazione_url);
+      }
     }
   }, [tasting]);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveNewPhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  };
+
+  const handleRemoveExistingPhoto = () => {
+    if (existingPhotoUrl) {
+      setPhotoToDelete(existingPhotoUrl);
+      setExistingPhotoUrl(null);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
-      // Converti partecipanti da stringa a array
+      // 1. Ottieni user
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // 2. Gestisci foto
+      let finalPhotoUrl: string | null = existingPhotoUrl;
+
+      // Elimina foto vecchia se richiesto
+      if (photoToDelete) {
+        await deletePhoto.mutateAsync(photoToDelete);
+        finalPhotoUrl = null;
+      }
+
+      // Upload nuova foto se presente
+      if (photoFile && user) {
+        finalPhotoUrl = await uploadPhoto.mutateAsync({
+          file: photoFile,
+          userId: user.id,
+        });
+      }
+
+      // 3. Converti partecipanti da stringa a array
       const partecipantiArray = formData.partecipanti
         ? formData.partecipanti
             .split(",")
@@ -73,6 +133,7 @@ export default function ModificaDegustazionePage({
             .filter((p) => p.length > 0)
         : [];
 
+      // 4. Aggiorna degustazione
       await updateTasting.mutateAsync({
         id,
         tasting: {
@@ -86,6 +147,7 @@ export default function ModificaDegustazionePage({
           occasione: formData.occasione || null,
           abbinamento_cibo: formData.abbinamento_cibo || null,
           partecipanti: partecipantiArray,
+          foto_degustazione_url: finalPhotoUrl,
         },
       });
 
@@ -283,6 +345,89 @@ export default function ModificaDegustazionePage({
                   placeholder="Impressioni complessive, valutazione finale..."
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Foto Degustazione */}
+          <div className="rounded-lg bg-white dark:bg-slate-800 p-6 shadow dark:shadow-slate-900/50 border border-transparent dark:border-slate-700">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
+              Foto Degustazione
+            </h2>
+            <div className="space-y-4">
+              {/* Foto esistente */}
+              {existingPhotoUrl && !photoPreview && (
+                <div className="relative">
+                  <div className="relative h-48 w-full overflow-hidden rounded-lg border-2 border-gray-200 dark:border-slate-600">
+                    <Image
+                      src={existingPhotoUrl}
+                      alt="Foto degustazione"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveExistingPhoto}
+                    className="absolute top-2 right-2 rounded-full bg-red-500 p-1.5 text-white shadow-lg hover:bg-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <p className="mt-2 text-xs text-gray-500 dark:text-slate-400">
+                    Foto attuale - Clicca X per rimuoverla
+                  </p>
+                </div>
+              )}
+
+              {/* Preview nuova foto */}
+              {photoPreview && (
+                <div className="relative">
+                  <div className="relative h-48 w-full overflow-hidden rounded-lg border-2 border-wine-500 dark:border-wine-400">
+                    <Image
+                      src={photoPreview}
+                      alt="Anteprima foto"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveNewPhoto}
+                    className="absolute top-2 right-2 rounded-full bg-red-500 p-1.5 text-white shadow-lg hover:bg-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <p className="mt-2 text-xs text-wine-600 dark:text-wine-400 font-medium">
+                    Nuova foto - Verrà caricata al salvataggio
+                  </p>
+                </div>
+              )}
+
+              {/* Upload nuova foto */}
+              {!photoPreview && (
+                <div>
+                  <label
+                    htmlFor="photo-upload"
+                    className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-900/50 p-6 transition hover:border-wine-500 dark:hover:border-wine-400 hover:bg-wine-50 dark:hover:bg-wine-900/20"
+                  >
+                    <Upload className="h-10 w-10 text-gray-400 dark:text-slate-500" />
+                    <span className="mt-2 text-sm font-medium text-gray-700 dark:text-slate-300">
+                      {existingPhotoUrl
+                        ? "Carica una nuova foto"
+                        : "Carica foto degustazione"}
+                    </span>
+                    <span className="mt-1 text-xs text-gray-500 dark:text-slate-400">
+                      PNG, JPG fino a 10MB
+                    </span>
+                  </label>
+                  <input
+                    id="photo-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
+                </div>
+              )}
             </div>
           </div>
 

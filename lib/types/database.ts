@@ -169,6 +169,7 @@ export interface Database {
           occasione: string | null;
           abbinamento_cibo: string | null;
           partecipanti: string[];
+          foto_degustazione_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -185,6 +186,7 @@ export interface Database {
           occasione?: string | null;
           abbinamento_cibo?: string | null;
           partecipanti?: string[];
+          foto_degustazione_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -201,6 +203,7 @@ export interface Database {
           occasione?: string | null;
           abbinamento_cibo?: string | null;
           partecipanti?: string[];
+          foto_degustazione_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };

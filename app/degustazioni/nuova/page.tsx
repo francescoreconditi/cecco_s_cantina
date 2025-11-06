@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCreateTasting } from "@/lib/hooks/use-tastings";
+import { useCreateTasting, useUploadTastingPhoto } from "@/lib/hooks/use-tastings";
 import { useWines } from "@/lib/hooks/use-wines";
+import { createClient } from "@/lib/supabase/client";
 import { Header } from "@/components/layout/header";
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import Image from "next/image";
+import { AlertCircle, Upload, X } from "lucide-react";
 
 export default function NuovaDegustazionePage() {
   const router = useRouter();
   const createTasting = useCreateTasting();
+  const uploadPhoto = useUploadTastingPhoto();
   const { data: wines } = useWines();
 
   const [formData, setFormData] = useState({
@@ -26,14 +29,48 @@ export default function NuovaDegustazionePage() {
     partecipanti: "",
   });
 
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhotoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setPhotoFile(null);
+    setPhotoPreview(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
-      // Converti partecipanti da stringa a array
+      // 1. Ottieni user
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      // 2. Upload foto se presente
+      let photoUrl: string | null = null;
+      if (photoFile && user) {
+        photoUrl = await uploadPhoto.mutateAsync({
+          file: photoFile,
+          userId: user.id,
+        });
+      }
+
+      // 3. Converti partecipanti da stringa a array
       const partecipantiArray = formData.partecipanti
         ? formData.partecipanti
             .split(",")
@@ -41,6 +78,7 @@ export default function NuovaDegustazionePage() {
             .filter((p) => p.length > 0)
         : [];
 
+      // 4. Crea degustazione con URL foto
       await createTasting.mutateAsync({
         wine_id: formData.wine_id,
         data: new Date(formData.data).toISOString(),
@@ -52,6 +90,7 @@ export default function NuovaDegustazionePage() {
         occasione: formData.occasione || null,
         abbinamento_cibo: formData.abbinamento_cibo || null,
         partecipanti: partecipantiArray,
+        foto_degustazione_url: photoUrl,
       });
 
       router.push("/degustazioni");
@@ -223,6 +262,54 @@ export default function NuovaDegustazionePage() {
                   className="mt-1 block w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 px-3 py-2 text-gray-900 dark:text-slate-100 placeholder:text-gray-400 dark:placeholder:text-slate-500 focus:border-wine-500 dark:focus:border-wine-600 focus:outline-none focus:ring-wine-500 dark:focus:ring-wine-600"
                   placeholder="Impressioni complessive, valutazione finale..."
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Foto Degustazione */}
+          <div className="rounded-lg bg-white dark:bg-slate-800 border border-transparent dark:border-slate-700 p-6 shadow dark:shadow-slate-900/50">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-slate-100">
+              Foto Degustazione
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                  Carica una foto
+                </label>
+                {!photoPreview ? (
+                  <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-slate-600 p-6 hover:border-wine-500 dark:hover:border-wine-600">
+                    <Upload className="mb-2 h-10 w-10 text-gray-400 dark:text-slate-500" />
+                    <span className="text-sm text-gray-600 dark:text-slate-400">
+                      Clicca per caricare una foto
+                    </span>
+                    <span className="mt-1 text-xs text-gray-500 dark:text-slate-500">
+                      PNG, JPG fino a 10MB
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoChange}
+                      className="hidden"
+                    />
+                  </label>
+                ) : (
+                  <div className="relative">
+                    <Image
+                      src={photoPreview}
+                      alt="Preview foto degustazione"
+                      width={400}
+                      height={300}
+                      className="rounded-lg object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemovePhoto}
+                      className="absolute right-2 top-2 rounded-full bg-red-600 p-2 text-white hover:bg-red-700"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

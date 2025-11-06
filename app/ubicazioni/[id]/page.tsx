@@ -12,7 +12,6 @@ import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { CellarPositionDisplay } from "@/components/ubicazioni/cellar-position-display";
-import type { CellarPosition } from "@/components/ubicazioni/cellar-position-selector";
 import {
   MapPin,
   Thermometer,
@@ -35,19 +34,6 @@ export default function DettaglioUbicazionePage({
   const { data: bottles } = useBottlesByLocation(id);
   const deleteLocation = useDeleteLocation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  // Estrai tutte le posizioni occupate dalle bottiglie in questa ubicazione
-  const occupiedPositions: CellarPosition[] = bottles
-    ? bottles.flatMap((bottle) => {
-        if (
-          bottle.posizioni_cantina &&
-          Array.isArray(bottle.posizioni_cantina)
-        ) {
-          return bottle.posizioni_cantina as unknown as CellarPosition[];
-        }
-        return [];
-      })
-    : [];
 
   const handleDelete = async () => {
     try {
@@ -288,7 +274,7 @@ export default function DettaglioUbicazionePage({
                             nr_file={location.nr_file}
                             bottiglie_fila_dispari={location.bottiglie_fila_dispari}
                             bottiglie_fila_pari={location.bottiglie_fila_pari}
-                            positions={occupiedPositions}
+                            bottles={bottles}
                           />
                         </div>
                       )}
